@@ -61,18 +61,18 @@ def abort_if_not_in_cellar(beer_id):
 
 parser = reqparse.RequestParser()
 parser.add_argument('name', 
-    type=str, 
+    type=unicode, 
     location=["json", "values"], 
     required=True)
 
 parser.add_argument('brewery', 
-    type=str, 
+    type=unicode, 
     location=["json", "values"], 
     required=True)
 
 parser.add_argument(
     'count', 
-    type=str, 
+    type=int, 
     location=["json", "values"], 
     required=False, 
     default=1)
