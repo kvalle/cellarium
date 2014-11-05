@@ -6,28 +6,43 @@ from flask.ext.restful import reqparse, abort, Api, Resource
 # repo
 
 BEERS = {
-        1: {
-                    "id": 1,
-                    "name": "Dark Horizon 3",
-                    "brewery": "Nøgne Ø",
-                    "count": 2
-        },
-        2: {
-                    "id": 2,
-                    "name": "Unearthly Oak Aged",
-                    "brewery": "Southern Tier",
-                    "count": 1
-        }
+    1: {
+                "id": 1,
+                "name": "Dark Horizon 3",
+                "brewery": "Nøgne Ø",
+                "count": 2
+    },
+    2: {
+                "id": 2,
+                "name": "Unearthly Oak Aged",
+                "brewery": "Southern Tier",
+                "count": 1
     }
+}
 
 def abort_if_not_in_cellar(beer_id):
     if beer_id not in BEERS:
         abort(404, message="No beer with beer_id {} in the cellar".format(beer_id))
 
-# resources
+# views
 
 parser = reqparse.RequestParser()
-parser.add_argument('name', type=str) # moar here
+parser.add_argument('name', 
+    type=str, 
+    location=["json", "values"], 
+    required=True)
+
+parser.add_argument('brewery', 
+    type=str, 
+    location=["json", "values"], 
+    required=True)
+
+parser.add_argument(
+    'count', 
+    type=int, 
+    location=["json", "values"], 
+    required=False, 
+    default=1)
 
 class Beer(Resource):
     def get(self, beer_id):
@@ -53,10 +68,11 @@ class BeerList(Resource):
     def post(self):
         args = parser.parse_args()
         beer_id = len(BEERS) + 1
-        BEERS[beer_id] = {'name': args['name']}
+        beer = args
+        beer["beer_id"] = beer_id
+        BEERS[beer_id] = beer
         return BEERS[beer_id], 201
 
-# views
 
 api.add_resource(BeerList, '/beers')
 api.add_resource(Beer, '/beers/<int:beer_id>')
