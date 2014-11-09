@@ -24,6 +24,7 @@ parser.add_argument(
     required=False, 
     default=1)
 
+
 class Beer(Resource):
     def get(self, beer_id):
         return repo.get_beer(beer_id)

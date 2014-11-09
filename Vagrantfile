@@ -13,6 +13,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     sudo pip install PyYAML
     sudo apt-get install git -y
     git clone https://github.com/kvalle/dotfiles.git
+
+    git clone https://github.com/twilio/flask-restful.git
+	# cd flask-restful
+	# python setup.py develop
 SCRIPT
 
   config.vm.network "forwarded_port", guest: 4321, host: 4321

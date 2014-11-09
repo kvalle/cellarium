@@ -5,6 +5,7 @@ import flask
 import shelve
 
 from api import app
+from exceptions import BeerNotFoundException
 
 @app.before_request
 def before_request():
@@ -16,15 +17,17 @@ def teardown_request(exception):
     if db: 
         db.close()
 
+
 def ucode(string):
     "Hack because shelve dosn't support unicode keys"
     return str(string).encode('utf-8')
 
 def get_beer(beer_id):
+    print "getting " + str(beer_id)
     try:
         return flask.g.db[ucode(beer_id)]
     except KeyError:
-        abort(404, message="No beer found with beer_id {}".format(beer_id))
+        raise BeerNotFoundException(beer_id)
 
 def delete_beer(beer_id):
     beer_id = ucode(beer_id)
