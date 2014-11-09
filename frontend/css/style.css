@@ -1,0 +1,35 @@
+body {
+	background-color: #EEE;
+	font-family: helvetica;
+}
+
+#container {
+	margin: 0 auto;
+	max-width: 800px;
+	padding: 30px;
+
+	background-color: white;
+
+	border-radius: 4px; 
+	-moz-border-radius: 4px; 
+	-webkit-border-radius: 4px; 
+}
+
+.search-query {
+	width: 60%;
+	font-size: 1em;
+
+	display: block;
+	margin: 0 auto;
+
+	margin-bottom: 20px;
+}
+
+h1 {
+	text-align: center;
+	border-bottom: 2px solid #DDD;
+}
+
+.beerlist th {
+	text-align: left;
+}

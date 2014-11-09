@@ -20,5 +20,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 SCRIPT
 
   config.vm.network "forwarded_port", guest: 4321, host: 4321
+  config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.synced_folder "", "/home/vagrant/kjellerapp"
 end
