@@ -23,5 +23,13 @@ def general_page_not_found(e):
     response = jsonify({ "message" : e.description })
     return make_response(response, 404)
 
+@app.after_request
+def after_request(response):
+	# Quick hack while developing
+    response.headers.add('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:8000')
+    print response.headers
+    return response
 
 import views

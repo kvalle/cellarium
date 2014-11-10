@@ -11,6 +11,12 @@
         <span ng-show="myForm.name.$error.required && !myForm.name.$pristine" class="help-inline">Required</span>
     </div>
 
+    <div class="control-group" ng-class="{error: myForm.count.$invalid && !myForm.count.$pristine}">
+        <label>Count</label>
+        <input type="text" name="count" ng-model="beer.count" ng-pattern="/^\d*$/">
+        <span ng-show="myForm.count.$error.pattern && !myForm.count.$pristine" class="help-inline">Must be a number</span>
+    </div>
+
     <br>
     <a href="#/" class="btn">Cancel</a>
     <button ng-click="save()" ng-disabled="myForm.$invalid" class="btn btn-primary">Save</button>
