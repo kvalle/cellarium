@@ -25,7 +25,8 @@ angular.module('kjeller', ['ngRoute'])
                 $scope.beers = data;
             }).
             error(function(data, status, headers, config) {
-                console.error("TODO: handle errors");
+                $scope.errorMessage = "Unable to retrieve list of beers";
+                console.error(status, data);
             });
     })
 
@@ -36,8 +37,8 @@ angular.module('kjeller', ['ngRoute'])
                     $location.path('/');
                 }).
                 error(function(data, status, headers, config) {
-                    console.error("TODO: handle errors on create");
-                    $location.path('/');
+                    $scope.errorMessage = "Save failed.";
+                    console.error(status, data);
                 });
         };
     })
@@ -51,7 +52,9 @@ angular.module('kjeller', ['ngRoute'])
                     $scope.beer = data;
                 }).
                 error(function(data, status, headers, config) {
-                    console.error("TODO: handle errors");
+                    // TODO: better handeling of this case
+                    $scope.errorMessage = "Unable to fetch beer data.";
+                    console.error(status, data);
                 });
 
             $scope.destroy = function() {
@@ -60,8 +63,8 @@ angular.module('kjeller', ['ngRoute'])
                         $location.path('/');
                     }).
                     error(function(data, status, headers, config) {
-                        console.error("TODO: handle errors on delete");
-                        $location.path('/');
+                        $scope.errorMessage = "Delete failed.";
+                        console.error(status, data);
                     });
             };
 
@@ -71,8 +74,8 @@ angular.module('kjeller', ['ngRoute'])
                         $location.path('/');
                     }).
                     error(function(data, status, headers, config) {
-                        console.error("TODO: handle errors on save");
-                        $location.path('/');
+                        $scope.errorMessage = "Save failed.";
+                        console.error(status, data);
                     });
             };
         });
