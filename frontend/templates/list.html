@@ -36,7 +36,6 @@
                 <th></th>
                 <th>Brewery</th>
                 <th>Name</th>
-                <th>Count</th>
             </tr>
         </thead>
         <tbody>
@@ -48,10 +47,10 @@
                     <a ng-click="destroy(beer.beer_id)">
                         <span title="Delete" class="glyphicon glyphicon-trash" aria-hidden="true"></span> 
                     </a>
+                    <span class="pull-right badge alert-info">{{beer.count}}</span>
                 </td>
                 <td>{{beer.brewery}}</td>
                 <td>{{beer.name}}</td>
-                <td>{{beer.count}}</td>
             </tr>
         </tbody>
     </table>
