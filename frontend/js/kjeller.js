@@ -78,6 +78,15 @@ angular.module('kjeller', ['ngRoute'])
         };
     })
 
+    .directive('tooltip', function(){
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs){
+                $(element).tooltip();
+            }
+        };
+    })
+
     .controller('EditCtrl',
         function($scope, $location, $routeParams, $http) {
             $scope.currentYear = currentYear();
@@ -116,3 +125,6 @@ angular.module('kjeller', ['ngRoute'])
             };
         });
 
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+})
