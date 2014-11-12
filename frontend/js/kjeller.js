@@ -19,15 +19,30 @@ angular.module('kjeller', ['ngRoute'])
             });
     }])
 
-    .controller('ListCtrl', function($scope, $http) {
-        $http.get('http://localhost:4321/beers').
-            success(function(data, status, headers, config) {
-                $scope.beers = data;
-            }).
-            error(function(data, status, headers, config) {
-                $scope.errorMessage = "Unable to retrieve list of beers";
-                console.error(status, data);
-            });
+    .controller('ListCtrl', function($scope, $http, $location) {
+        var updateBeerList = function () {
+            $http.get('http://localhost:4321/beers').
+                success(function(data, status, headers, config) {
+                    $scope.beers = data;
+                }).
+                error(function(data, status, headers, config) {
+                    $scope.errorMessage = "Unable to retrieve list of beers";
+                    console.error(status, data);
+                });
+        }
+
+        updateBeerList();
+
+        $scope.destroy = function(beerId) {
+            $http.delete('http://localhost:4321/beers/' + beerId, $scope.beer).
+                success(function(data, status, headers, config) {
+                    updateBeerList();
+                }).
+                error(function(data, status, headers, config) {
+                    $scope.errorMessage = "Delete failed.";
+                    console.error(status, data);
+                });
+        };
     })
 
     .controller('CreateCtrl', function($scope, $location, $timeout, $http) {
