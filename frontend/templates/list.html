@@ -13,7 +13,7 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <form ng-show="{beers}" class="navbar-form navbar-left" role="search">
+      <form ng-show="beers" class="navbar-form navbar-left" role="search">
         <div class="form-group">
             <input type="text" class="form-control" ng-model="search" placeholder="Filter beers">
         </div>
@@ -29,23 +29,25 @@
 
 <div class="error-message" ng-show="errorMessage">{{errorMessage}}</div>
 
-<table class="beerlist">
-    <thead>
-        <tr>
-            <th>Brewery</th>
-            <th>Name</th>
-            <th>Count</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="beer in beers | filter:search | orderBy:'name'">
-            <td>{{beer.brewery}}</td>
-            <td>{{beer.name}}</td>
-            <td>{{beer.count}}</td>
-            <td>
-                <a ng-href="#/edit/{{beer.beer_id}}">Edit</a>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Brewery</th>
+                <th>Name</th>
+                <th>Count</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="beer in beers | filter:search | orderBy:'name'">
+                <td>{{beer.brewery}}</td>
+                <td>{{beer.name}}</td>
+                <td>{{beer.count}}</td>
+                <td>
+                    <a ng-href="#/edit/{{beer.beer_id}}">Edit</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -29,29 +29,29 @@
 
 <div class="error-message" ng-show="errorMessage">{{errorMessage}}</div>
 
-<form name="myForm">
-    <div class="control-group" ng-class="{error: myForm.brewery.$invalid && !myForm.brewery.$pristine}">
+<form name="beerForm">
+    <div class="control-group" ng-class="{error: beerForm.brewery.$invalid && !beerForm.brewery.$pristine}">
         <label>Brewery</label>
         <input type="text" name="brewery" ng-model="beer.brewery" required>
-        <span ng-show="myForm.brewery.$error.required && !myForm.brewery.$pristine" class="help-inline">Required</span>
+        <span ng-show="beerForm.brewery.$error.required && !beerForm.brewery.$pristine" class="help-inline">Required</span>
     </div>
 
-    <div class="control-group" ng-class="{error: myForm.name.$invalid && !myForm.name.$pristine}">
+    <div class="control-group" ng-class="{error: beerForm.name.$invalid && !beerForm.name.$pristine}">
         <label>Name</label>
         <input type="text" name="name" ng-model="beer.name" required>
-        <span ng-show="myForm.name.$error.required && !myForm.name.$pristine" class="help-inline">Required</span>
+        <span ng-show="beerForm.name.$error.required && !beerForm.name.$pristine" class="help-inline">Required</span>
     </div>
 
-    <div class="control-group" ng-class="{error: myForm.count.$invalid && !myForm.count.$pristine}">
+    <div class="control-group" ng-class="{error: beerForm.count.$invalid && !beerForm.count.$pristine}">
         <label>Count</label>
         <input type="text" name="count" ng-model="beer.count" ng-pattern="/^\d*$/">
-        <span ng-show="myForm.count.$error.pattern && !myForm.count.$pristine" class="help-inline">Must be a number</span>
+        <span ng-show="beerForm.count.$error.pattern && !beerForm.count.$pristine" class="help-inline">Must be a number</span>
     </div>
 
     <br>
 
     <a href="#/" class="btn">Cancel</a>
-    <button ng-click="save()" ng-disabled="myForm.$invalid" class="btn btn-primary">Save</button>
+    <button ng-click="save()" ng-disabled="beerForm.$invalid" class="btn btn-primary">Save</button>
     <button ng-click="destroy()" ng-show="beer.beer_id" class="btn btn-danger">Delete</button>
 </form>
 
