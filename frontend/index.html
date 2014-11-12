@@ -1,8 +1,12 @@
 <!doctype html>
-<html ng-app="kjeller">
+<html lang="en" ng-app="kjeller">
 <head>
     <title>Øλkjeller</title>
-    <meta charset="UTF-8">    
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css" />
 
     <script src="/js/libs/angular-1.3.2/angular.min.js"></script>
@@ -11,9 +15,11 @@
     <script src="/js/kjeller.js"></script>
 </head>
 <body>
-    <div id="container">
-        <h1>Øλkjeller</h1>
+    <div class="container">
         <div ng-view></div>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 </body>
 </html>

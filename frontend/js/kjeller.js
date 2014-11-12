@@ -31,6 +31,8 @@ angular.module('kjeller', ['ngRoute'])
     })
 
     .controller('CreateCtrl', function($scope, $location, $timeout, $http) {
+        $scope.beer = {};
+
         $scope.save = function() {
             $http.post('http://localhost:4321/beers', $scope.beer).
                 success(function(data, status, headers, config) {
