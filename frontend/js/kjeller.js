@@ -1,19 +1,3 @@
-var applyDefaults = function(beer) {
-    if (!beer.vintage) {
-        beer.vintage = currentYear();
-    }
-    if (!beer.count) {
-        beer.count = 1;
-    }
-
-    return beer;
-}
-
-var currentYear = function() {
-    return new Date().getFullYear();
-}
-
-
 angular.module('kjeller', ['ngRoute'])
 
     .config(['$routeProvider', function($routeProvider) {
@@ -44,8 +28,26 @@ angular.module('kjeller', ['ngRoute'])
         };
     })
 
-    .factory('beerApi', ['$http', function($http) {
+    .factory('beerDefaults', function() {
+        return {
+            'year': new Date().getFullYear(),
+            'count': 1
+        }
+    })
+
+    .factory('beerApi', ['$http', 'beerDefaults', function($http, defaults) {
         var url = 'http://localhost:4321/beers';
+
+        var applyDefaults = function(beer) {
+            if (!beer.vintage) {
+                beer.vintage = defaults.year;
+            }
+            if (!beer.count) {
+                beer.count = defaults.count;
+            }
+
+            return beer;
+        }
 
         var getBeers = function (fn) {
             $http.get(url).
@@ -93,6 +95,8 @@ angular.module('kjeller', ['ngRoute'])
         };
 
         var saveBeer = function (beer, fn) {
+            beer = applyDefaults(beer);
+
             if (beer.beer_id) {
                 putBeer(beer, fn);
             } else {
@@ -101,9 +105,9 @@ angular.module('kjeller', ['ngRoute'])
         };
 
         return {
+            'getBeer': getBeer,
             'getBeers': getBeers,
             'deleteBeer': deleteBeer,
-            'getBeer': getBeer,
             'saveBeer': saveBeer
         }
     }])
@@ -127,8 +131,8 @@ angular.module('kjeller', ['ngRoute'])
             updateBeerList();
         }])
 
-    .controller('DetailsCtrl', ['$scope', '$location', '$routeParams', '$http', 'beerApi', function($scope, $location, $routeParams, $http, beerApi) {
-                $scope.currentYear = currentYear();
+    .controller('DetailsCtrl', ['$scope', '$location', '$routeParams', 'beerApi', 'beerDefaults', function($scope, $location, $routeParams, beerApi, beerDefaults) {
+                $scope.defaults = beerDefaults;
     
                 if ($routeParams.beerId) {
                     beerApi.getBeer($routeParams.beerId, function(data) {
@@ -145,9 +149,7 @@ angular.module('kjeller', ['ngRoute'])
                 };
     
                 $scope.save = function() {
-                    var beer = applyDefaults($scope.beer);
-
-                    beerApi.saveBeer(beer, function() {
+                    beerApi.saveBeer($scope.beer, function() {
                         $location.path('/');
                     });
                 };
