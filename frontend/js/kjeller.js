@@ -35,49 +35,6 @@ angular.module('kjeller', ['ngRoute'])
             });
     }])
 
-    .controller('ListCtrl', function($scope, $http, $location) {
-        var updateBeerList = function () {
-            $http.get('http://localhost:4321/beers').
-                success(function(data, status, headers, config) {
-                    $scope.beers = data;
-                }).
-                error(function(data, status, headers, config) {
-                    $scope.errorMessage = "Unable to retrieve list of beers";
-                    console.error(status, data);
-                });
-        }
-
-        updateBeerList();
-
-        $scope.destroy = function(beerId) {
-            $http.delete('http://localhost:4321/beers/' + beerId, $scope.beer).
-                success(function(data, status, headers, config) {
-                    updateBeerList();
-                }).
-                error(function(data, status, headers, config) {
-                    $scope.errorMessage = "Delete failed.";
-                    console.error(status, data);
-                });
-        };
-    })
-
-    .controller('CreateCtrl', function($scope, $location, $timeout, $http) {
-        $scope.beer = {};
-        $scope.currentYear = currentYear();
-
-        $scope.save = function() {
-            var beer = applyDefaults($scope.beer);
-            $http.post('http://localhost:4321/beers', beer).
-                success(function(data, status, headers, config) {
-                    $location.path('/');
-                }).
-                error(function(data, status, headers, config) {
-                    $scope.errorMessage = "Save failed.";
-                    console.error(status, data);
-                });
-        };
-    })
-
     .directive('tooltip', function(){
         return {
             restrict: 'A',
@@ -87,44 +44,104 @@ angular.module('kjeller', ['ngRoute'])
         };
     })
 
-    .controller('EditCtrl',
-        function($scope, $location, $routeParams, $http) {
-            $scope.currentYear = currentYear();
+    .factory('beerApi', ['$http', function($http) {
+        var url = 'http://localhost:4321/beers';
 
-            $http.get('http://localhost:4321/beers/' + $routeParams.beerId).
-                success(function(data, status, headers, config) {
-                    $scope.beer = data;
-                }).
-                error(function(data, status, headers, config) {
-                    // TODO: better handeling of this case
-                    $scope.errorMessage = "Unable to fetch beer data.";
-                    console.error(status, data);
-                });
-
-            $scope.destroy = function() {
-                $http.delete('http://localhost:4321/beers/' + $routeParams.beerId, $scope.beer).
-                    success(function(data, status, headers, config) {
-                        $location.path('/');
-                    }).
+        return {
+            'getBeers': function (fn) {
+                $http.get(url).
+                    success(fn).
                     error(function(data, status, headers, config) {
-                        $scope.errorMessage = "Delete failed.";
+                        console.error(status, data);
+                        // TODO: register error "Unable to retrieve list of beers";
+                    });
+            },
+            'deleteBeer': function (beer, fn) {
+                $http.delete(url + '/' + beer.beer_id).
+                    success(fn).
+                    error(function(data, status, headers, config) {
+                        // TODO: register error "Something went wrong, unable to delete beer"
                         console.error(status, data);
                     });
-            };
+            },
+            'putBeer': function (beer, fn) {
+                $http.put(url + '/' + beer.beer_id, beer).
+                    success(fn).
+                    error(function(data, status, headers, config) {
+                        // TODO: register error "Save failed."
+                        console.error(status, data);
+                    });
+            },
+            'postBeer': function (beer, fn) {
+                $http.post(url, beer).
+                    success(fn).
+                    error(function(data, status, headers, config) {
+                        // TODO: register error "Save failed."
+                        console.error(status, data);
+                    });
+            },
+            'getBeer': function (beerId, fn) {
+                $http.get(url + '/' + beerId).
+                    success(fn).
+                    error(function(data, status, headers, config) {
+                        // TODO: register error "Unable to fetch beer data.";
+                        console.error(status, data);
+                    });
+            }
+        }
+    }])
 
+    .controller('ListCtrl', ['$scope', 'beerApi', function($scope, beerApi) {
+            var updateBeerList = function() {
+                beerApi.getBeers(
+                    function(data, status, headers, config) {
+                        $scope.beers = data;
+                });
+            }
+    
+            $scope.destroy = function(beer) {
+                beerApi.deleteBeer(beer, 
+                    function(data, status, headers, config) {
+                        updateBeerList();
+                    }
+                );
+            };
+    
+            updateBeerList();
+        }])
+
+    .controller('CreateCtrl', ['$scope', '$location', 'beerApi', function($scope, $location, beerApi) {
+            $scope.beer = {};
+            $scope.currentYear = currentYear();
+    
+            // TODO could this be same as EditCtrl.save() ?
+            // Merge controllers?
             $scope.save = function() {
                 var beer = applyDefaults($scope.beer);
-                $http.put('http://localhost:4321/beers/' + $routeParams.beerId, beer).
-                    success(function(data, status, headers, config) {
-                        $location.path('/');
-                    }).
-                    error(function(data, status, headers, config) {
-                        $scope.errorMessage = "Save failed.";
-                        console.error(status, data);
-                    });
+                
+                beerApi.postBeer(beer, function() {
+                    $location.path('/');
+                });
             };
-        });
+    }])
 
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-})
+    .controller('EditCtrl', ['$scope', '$location', '$routeParams', '$http', 'beerApi', function($scope, $location, $routeParams, $http, beerApi) {
+                $scope.currentYear = currentYear();
+    
+                beerApi.getBeer($routeParams.beerId, function(data) {
+                    $scope.beer = data;
+                });
+
+                $scope.destroy = function() {
+                    beerApi.deleteBeer($scope.beer, function() {
+                        $location.path('/');
+                    });
+                };
+    
+                $scope.save = function() {
+                    var beer = applyDefaults($scope.beer);
+                    beerApi.putBeer(beer, function() {
+                        $location.path('/');
+                    });
+                };
+            }]);
