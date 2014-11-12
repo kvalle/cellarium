@@ -24,6 +24,12 @@ parser.add_argument(
     required=False, 
     default=1)
 
+parser.add_argument(
+    'vintage', 
+    type=int, 
+    location=["json", "values"], 
+    required=True)
+
 
 class Beer(Resource):
     def get(self, beer_id):

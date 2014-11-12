@@ -35,6 +35,7 @@
         <div class="col-sm-10">
             <input id="breweryInput" class="form-control" type="text" name="brewery" ng-model="beer.brewery" required>
             <span class="help-block" ng-show="beerForm.brewery.$error.required && !beerForm.brewery.$pristine">Brewery name is required</span>
+            <span class="help-block" ng-show="!beerForm.brewery.$error.required || beerForm.brewery.$pristine">Which brewery made this beer? <i>(required)</i></span>
         </div>
     </div>
 
@@ -43,14 +44,26 @@
         <div class="col-sm-10">
             <input id="nameInput" class="form-control" type="text" name="name" ng-model="beer.name" required>
             <span class="help-block" ng-show="beerForm.name.$error.required && !beerForm.name.$pristine">Beer name is required</span>
+            <span class="help-block" ng-show="!beerForm.name.$error.required || beerForm.name.$pristine">What is the name of this brew? <i>(required)</i></span>
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': beerForm.vintage.$invalid && !beerForm.vintage.$pristine}">
+        <label for="yearInput" class="col-sm-2 control-label">Vintage</label>
+        <div class="col-sm-10">
+            <input id="yearInput" class="form-control" type="text" name="vintage" placeholder="{{currentYear}}" ng-model="beer.vintage" ng-pattern="/^\d{4}$/">
+            <span class="help-block"></span>
+            <span class="help-block" ng-show="beerForm.vintage.$error.pattern && !beerForm.vintage.$pristine">Must be four digit year or blank</span>
+            <span class="help-block" ng-show="!beerForm.vintage.$error.pattern || beerForm.vintage.$pristine">Which year was this beer brewed?</span>
         </div>
     </div>
 
     <div class="form-group" ng-class="{'has-error': beerForm.count.$invalid && !beerForm.count.$pristine}">
-        <label for="countInput" class="col-sm-2 control-label">Count</label>
+        <label for="countInput" class="col-sm-2 control-label">#</label>
         <div class="col-sm-10">
-            <input id="countInput" class="form-control" type="text" name="count" ng-model="beer.count" ng-pattern="/^\d*$/">
+            <input id="countInput" class="form-control" type="text" name="count" placeholder="1" ng-model="beer.count" ng-pattern="/^\d*$/">
             <span class="help-block" ng-show="beerForm.count.$error.pattern && !beerForm.count.$pristine">Count must be a number</span>
+            <span class="help-block" ng-show="!beerForm.count.$error.pattern || beerForm.count.$pristine">How many bottles do you have?</span>
         </div>
     </div>
 

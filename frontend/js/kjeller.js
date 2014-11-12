@@ -1,3 +1,19 @@
+var applyDefaults = function(beer) {
+    if (!beer.vintage) {
+        beer.vintage = currentYear();
+    }
+    if (!beer.count) {
+        beer.count = 1;
+    }
+
+    return beer;
+}
+
+var currentYear = function() {
+    return new Date().getFullYear();
+}
+
+
 angular.module('kjeller', ['ngRoute'])
 
     .config(['$routeProvider', function($routeProvider) {
@@ -47,9 +63,11 @@ angular.module('kjeller', ['ngRoute'])
 
     .controller('CreateCtrl', function($scope, $location, $timeout, $http) {
         $scope.beer = {};
+        $scope.currentYear = currentYear();
 
         $scope.save = function() {
-            $http.post('http://localhost:4321/beers', $scope.beer).
+            var beer = applyDefaults($scope.beer);
+            $http.post('http://localhost:4321/beers', beer).
                 success(function(data, status, headers, config) {
                     $location.path('/');
                 }).
@@ -62,9 +80,9 @@ angular.module('kjeller', ['ngRoute'])
 
     .controller('EditCtrl',
         function($scope, $location, $routeParams, $http) {
-            var beerId = $routeParams.beerId;
+            $scope.currentYear = currentYear();
 
-            $http.get('http://localhost:4321/beers/' + beerId).
+            $http.get('http://localhost:4321/beers/' + $routeParams.beerId).
                 success(function(data, status, headers, config) {
                     $scope.beer = data;
                 }).
@@ -75,7 +93,7 @@ angular.module('kjeller', ['ngRoute'])
                 });
 
             $scope.destroy = function() {
-                $http.delete('http://localhost:4321/beers/' + beerId, $scope.beer).
+                $http.delete('http://localhost:4321/beers/' + $routeParams.beerId, $scope.beer).
                     success(function(data, status, headers, config) {
                         $location.path('/');
                     }).
@@ -86,7 +104,8 @@ angular.module('kjeller', ['ngRoute'])
             };
 
             $scope.save = function() {
-                $http.put('http://localhost:4321/beers/' + beerId, $scope.beer).
+                var beer = applyDefaults($scope.beer);
+                $http.put('http://localhost:4321/beers/' + $routeParams.beerId, beer).
                     success(function(data, status, headers, config) {
                         $location.path('/');
                     }).
