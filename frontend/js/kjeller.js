@@ -20,6 +20,14 @@ angular.module('kjeller', ['ngRoute'])
                 });
         }])
 
+    .run(['$rootScope', '$location',
+        function($rootScope, $location) {
+            $rootScope.isOnPage = function (page) {
+                var currentRoute = $location.path().substring(1);
+                return page === currentRoute;
+            };
+        }])
+
     .directive('tooltip', 
         function(){
             return {
@@ -114,14 +122,6 @@ angular.module('kjeller', ['ngRoute'])
                 'deleteBeer': deleteBeer,
                 'saveBeer': saveBeer
             }
-        }])
-
-    .controller('NavigationCtrl', ['$scope', '$location',
-        function($scope, $location) {
-            $scope.isOnPage = function (page) {
-                var currentRoute = $location.path().substring(1);
-                return page === currentRoute;
-            };
         }])
 
     .controller('ListCtrl', ['$scope', 'beerApi', 
