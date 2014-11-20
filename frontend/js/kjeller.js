@@ -116,6 +116,14 @@ angular.module('kjeller', ['ngRoute'])
             }
         }])
 
+    .controller('NavigationCtrl', ['$scope', '$location',
+        function($scope, $location) {
+            $scope.isOnPage = function (page) {
+                var currentRoute = $location.path().substring(1);
+                return page === currentRoute;
+            };
+        }])
+
     .controller('ListCtrl', ['$scope', 'beerApi', 
         function($scope, beerApi) {
             var updateBeerList = function() {
