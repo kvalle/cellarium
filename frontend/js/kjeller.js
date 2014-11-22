@@ -45,7 +45,8 @@ angular.module('kjeller', ['ngRoute'])
 
                 success: _.partialRight(addMessage, "success"),
                 info: _.partialRight(addMessage, "info"),
-                warn: _.partialRight(addMessage, "warning")
+                warn: _.partialRight(addMessage, "warning"),
+                error: _.partialRight(addMessage, "error")
             };
         }])
 
@@ -87,7 +88,7 @@ angular.module('kjeller', ['ngRoute'])
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         console.error(status, data);
-                        // TODO: register error "Unable to retrieve list of beers";
+                        flash.error("Unable to retrieve list of beers");
                     });
             };
 
@@ -95,7 +96,7 @@ angular.module('kjeller', ['ngRoute'])
                 $http.delete(url + '/' + beer.beer_id)
                     .success(fn)
                     .error(function(data, status, headers, config) {
-                        // TODO: register error "Something went wrong, unable to delete beer"
+                        flash.error("Delete of \"" + beer.brewery + " " + beer.name + "\" failed");
                         console.error(status, data);
                     });
             };
@@ -104,9 +105,8 @@ angular.module('kjeller', ['ngRoute'])
                 $http.put(url + '/' + beer.beer_id, beer)
                     .success(fn)
                     .error(function(data, status, headers, config) {
-                        // TODO: register error "Save failed."
+                        flash.error("Save of \"" + beer.brewery + " " + beer.name + "\" failed");
                         console.error(status, data);
-                        flash.info("whoops")
                     });
             };
 
@@ -114,7 +114,7 @@ angular.module('kjeller', ['ngRoute'])
                 $http.post(url, beer)
                     .success(fn)
                     .error(function(data, status, headers, config) {
-                        // TODO: register error "Save failed."
+                        flash.error("Save of \"" + beer.brewery + " " + beer.name + "\" failed");
                         console.error(status, data);
                     });
             };
@@ -123,7 +123,7 @@ angular.module('kjeller', ['ngRoute'])
                 $http.get(url + '/' + beerId)
                     .success(fn)
                     .error(function(data, status, headers, config) {
-                        // TODO: register error "Unable to fetch beer data.";
+                        flash.error("Unable to fetch beer details")
                         console.error(status, data);
                     });
             };
@@ -178,14 +178,19 @@ angular.module('kjeller', ['ngRoute'])
 
             $scope.destroy = function() {
                 beerApi.deleteBeer($scope.beer, function() {
-                    flash.info("Deleted beer");
+                    flash.success("Deleted \"" + $scope.beer.brewery + " " + $scope.beer.name + "\"");
                     $location.path('/');
                 });
             };
 
             $scope.save = function() {
                 beerApi.saveBeer($scope.beer, function() {
-                    flash.info("saved something");
+                    if ($scope.beer.beer_id) {
+                        flash.success("Updated \"" + $scope.beer.brewery + " " + $scope.beer.name + "\"");
+                    } else {
+                        flash.success("Added \"" + $scope.beer.brewery + " " + $scope.beer.name + "\"");
+                    }
+                    
                     $location.path('/');
                 });
             };
