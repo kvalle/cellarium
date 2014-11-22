@@ -56,6 +56,12 @@
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->
         </nav>
+
+        <div ng-repeat="msg in flash.messages" class="alert alert-{{msg.type}} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            {{msg.text}}
+        </div>
+
         <div ng-view></div>
     </div>
 
