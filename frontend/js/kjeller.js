@@ -29,8 +29,8 @@ angular.module('kjeller', ['ngRoute'])
             $rootScope.flash = flash;
         }])
 
-    .factory('flash', ['$rootScope',
-        function($rootScope, $scope) {
+    .factory('flash', ['$rootScope', '$timeout',
+        function($rootScope, $timeout) {
             var messages = [];
             var idSeq = 1;
 
@@ -45,10 +45,7 @@ angular.module('kjeller', ['ngRoute'])
                     "text": text,
                     "type": type
                 });
-                window.setTimeout(function() {
-                    removeMessage(messageId);
-                    $rootScope.$apply();
-                }, 10000);
+                $timeout(_.partial(removeMessage, messageId), 10000);
             };
 
             return {
