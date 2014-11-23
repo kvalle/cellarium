@@ -32,16 +32,23 @@ angular.module('kjeller', ['ngRoute'])
     .factory('flash', ['$rootScope',
         function($rootScope) {
             var messages = [];
+            var idSeq = 1;
 
             var addMessage = function (text, type) {
                 messages.push({
+                    "id": idSeq++,
                     "text": text,
                     "type": type
                 });
             };
 
+            var removeMessage = function (id) {
+                _.remove(messages, function (msg) { return msg.id === id });
+            };
+
             return {
                 messages: messages,
+                remove: removeMessage,
 
                 success: _.partialRight(addMessage, "success"),
                 info: _.partialRight(addMessage, "info"),

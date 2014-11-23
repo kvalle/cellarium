@@ -58,7 +58,7 @@
             </div>
             <div class="col-md-3">
                 <div ng-repeat="msg in flash.messages" class="alert alert-{{msg.type}} alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <button type="button" class="close" ng-click="flash.remove(msg.id)" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     {{msg.text}}
                 </div>
             </div>
