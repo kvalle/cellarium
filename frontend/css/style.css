@@ -93,10 +93,9 @@ body {
 	border-radius: 4px;
 }
 
-.error-message {
-	color: red; 
-	width: 100%; 
-	text-align: center; 
-	margin: 20px 0; 
-	font-weight: bold;
+a.danger {
+  color: #d9534f;
+}
+a.danger:hover {
+  color: #c22521;
 }
