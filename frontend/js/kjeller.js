@@ -46,7 +46,7 @@ angular.module('kjeller', ['ngRoute'])
                 success: _.partialRight(addMessage, "success"),
                 info: _.partialRight(addMessage, "info"),
                 warn: _.partialRight(addMessage, "warning"),
-                error: _.partialRight(addMessage, "error")
+                error: _.partialRight(addMessage, "danger")
             };
         }])
 
