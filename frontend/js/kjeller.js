@@ -35,7 +35,7 @@ angular.module('kjeller', ['ngRoute'])
             var idSeq = 1;
 
             var addMessage = function (text, type) {
-                messages.push({
+                messages.unshift({
                     "id": idSeq++,
                     "text": text,
                     "type": type
