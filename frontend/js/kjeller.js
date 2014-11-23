@@ -30,20 +30,25 @@ angular.module('kjeller', ['ngRoute'])
         }])
 
     .factory('flash', ['$rootScope',
-        function($rootScope) {
+        function($rootScope, $scope) {
             var messages = [];
             var idSeq = 1;
 
+            var removeMessage = function (id) {
+                _.remove(messages, function (msg) { return msg.id === id });
+            };
+
             var addMessage = function (text, type) {
+                var messageId = idSeq++;
                 messages.unshift({
-                    "id": idSeq++,
+                    "id": messageId,
                     "text": text,
                     "type": type
                 });
-            };
-
-            var removeMessage = function (id) {
-                _.remove(messages, function (msg) { return msg.id === id });
+                window.setTimeout(function() {
+                    removeMessage(messageId);
+                    $rootScope.$apply();
+                }, 10000);
             };
 
             return {
