@@ -3,8 +3,8 @@
 from flask.ext.restful import reqparse, Resource
 import flask
 
-from api import api
-from api import repository as repo
+from server import api
+from server import repository as repo
 
 parser = reqparse.RequestParser()
 parser.add_argument('name', 
@@ -52,5 +52,5 @@ class BeerList(Resource):
         return saved_beer, 201
 
 
-api.add_resource(BeerList, '/beers')
-api.add_resource(Beer, '/beers/<string:beer_id>')
+api.add_resource(BeerList, '/api/beers')
+api.add_resource(Beer, '/api/beers/<string:beer_id>')

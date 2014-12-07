@@ -15,7 +15,7 @@ class CellariumApi(Api):
         return super(CellariumApi, self).handle_error(e)
 
 
-app = Flask(__name__)
+app = Flask("Cellarium")
 api = CellariumApi(app)
 
 

@@ -4,8 +4,9 @@ from flask.ext.restful import abort
 import flask
 import shelve
 
-from api import app
+from server import app
 from exceptions import BeerNotFoundException
+
 
 @app.before_request
 def before_request():
