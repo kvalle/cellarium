@@ -17,15 +17,13 @@ parser.add_argument('brewery',
     location=["json", "values"], 
     required=True)
 
-parser.add_argument(
-    'count', 
+parser.add_argument('count',
     type=int, 
     location=["json", "values"], 
     required=False, 
     default=1)
 
-parser.add_argument(
-    'vintage', 
+parser.add_argument('vintage',
     type=int, 
     location=["json", "values"], 
     required=True)
