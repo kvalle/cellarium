@@ -81,7 +81,7 @@ angular.module('cellarium', ['ngRoute'])
 
     .factory('beerApi', ['$http', 'beerDefaults', 'flash',
         function($http, defaults, flash) {
-            var url = 'http://localhost:4321/beers';
+            var url = '/beers';
 
             var applyDefaults = function(beer) {
                 if (!beer.vintage) {
