@@ -26,41 +26,39 @@ angular.module('kjeller', ['ngRoute'])
                 var currentRoute = $location.path().substring(1);
                 return page === currentRoute;
             };
-            $rootScope.flash = flash;
         }])
 
     .factory('flash', ['$rootScope',
         function($rootScope) {
-            var messages = [],
-                idSeq = 1,
-                maxMessages = 5;
-
-            var removeMessage = function (id) {
-                _.remove(messages, function (msg) { return msg.id === id });
+            var message = {
+                "text": "",
+                "type": ""
             };
 
-            var addMessage = function (text, type) {
-                while (messages.length > maxMessages) {
-                    console.log("messages length " + messages.length)
-                    messages.pop();
-                }
-                var messageId = idSeq++;
-                messages.unshift({
-                    "id": messageId,
-                    "text": text,
-                    "type": type
-                });
+            var clear = function () {
+                message.text = "";
+            };
+
+            var set = function (text, type) {
+                message.text = text;
+                message.type = type;
             };
 
             return {
-                messages: messages,
-                remove: removeMessage,
+                message: message,
+                clear: clear,
 
-                success: _.partialRight(addMessage, "success"),
-                info: _.partialRight(addMessage, "info"),
-                warn: _.partialRight(addMessage, "warning"),
-                error: _.partialRight(addMessage, "danger")
+                success: _.partialRight(set, "success"),
+                info: _.partialRight(set, "info"),
+                warn: _.partialRight(set, "warning"),
+                error: _.partialRight(set, "danger")
             };
+        }])
+
+    .controller('FlashCtrl', ['$scope', 'flash',
+        function($scope, flash) {
+            $scope.message = flash.message;
+            $scope.clear = flash.clear;
         }])
 
     .directive('tooltip', 
