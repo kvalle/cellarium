@@ -31,21 +31,27 @@ angular.module('kjeller', ['ngRoute'])
 
     .factory('flash', ['$rootScope', '$timeout',
         function($rootScope, $timeout) {
-            var messages = [];
-            var idSeq = 1;
+            var messages = [],
+                idSeq = 1,
+                messageTime = 10000,
+                maxMessages = 5;
 
             var removeMessage = function (id) {
                 _.remove(messages, function (msg) { return msg.id === id });
             };
 
             var addMessage = function (text, type) {
+                while (messages.length > maxMessages) {
+                    console.log("messages length " + messages.length)
+                    messages.pop();
+                }
                 var messageId = idSeq++;
                 messages.unshift({
                     "id": messageId,
                     "text": text,
                     "type": type
                 });
-                $timeout(_.partial(removeMessage, messageId), 10000);
+                $timeout(_.partial(removeMessage, messageId), messageTime);
             };
 
             return {
