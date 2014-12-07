@@ -30,27 +30,27 @@ parser.add_argument('vintage',
 
 
 class Beer(Resource):
-    def get(self, beer_id):
+    def get(self, user, beer_id):
         return repo.get_beer(beer_id)
 
-    def delete(self, beer_id):
+    def delete(self, user, beer_id):
         repo.delete_beer(beer_id)
         return '', 204
 
-    def put(self, beer_id):
+    def put(self, user, beer_id):
         beer = repo.update_beer(beer_id, parser.parse_args())
         return beer, 201
 
 
 class BeerList(Resource):
-    def get(self):
-        return repo.list_beers()
+    def get(self, user):
+        return repo.list_beers(user)
 
-    def post(self):
+    def post(self, user):
         beer = parser.parse_args()
-        saved_beer = repo.add_beer(beer)
+        saved_beer = repo.add_beer(user, beer)
         return saved_beer, 201
 
 
-api.add_resource(BeerList, '/api/beers')
-api.add_resource(Beer, '/api/beers/<string:beer_id>')
+api.add_resource(BeerList, '/api/<string:user>/beers')
+api.add_resource(Beer,     '/api/<string:user>/beers/<string:beer_id>')

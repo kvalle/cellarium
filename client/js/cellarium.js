@@ -3,20 +3,21 @@ angular.module('cellarium', ['ngRoute'])
     .config(['$routeProvider', 
         function($routeProvider) {
             $routeProvider
-                .when('/', {
+                .when('/:user', {
                     controller:'ListCtrl',
                     templateUrl:'templates/list.html'
                 })
-                .when('/edit/:beerId', {
+                .when('/:user/edit/:beerId', {
                     controller:'DetailsCtrl',
                     templateUrl:'templates/detail.html'
                 })
-                .when('/new', {
+                .when('/:user/new', {
                     controller:'DetailsCtrl',
                     templateUrl:'templates/detail.html'
                 })
                 .otherwise({
-                    redirectTo:'/'
+                    // TODO: once login is implemented, redirect here
+                    redirectTo:'/kjetil'
                 });
         }])
 
@@ -81,7 +82,14 @@ angular.module('cellarium', ['ngRoute'])
 
     .factory('beerApi', ['$http', 'beerDefaults', 'flash',
         function($http, defaults, flash) {
-            var url = '/api/beers';
+            var urlFor = function (user, beerId) {
+                var url = '/api/' + user + '/beers';
+                if (beerId) {
+                    url += '/' + beerId;
+                }
+                console.log(url);
+                return url;
+            };
 
             var applyDefaults = function(beer) {
                 if (!beer.vintage) {
@@ -92,10 +100,10 @@ angular.module('cellarium', ['ngRoute'])
                 }
 
                 return beer;
-            }
+            };
 
-            var getBeers = function (fn) {
-                $http.get(url)
+            var getBeers = function (user, fn) {
+                $http.get(urlFor(user))
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         console.error(status, data);
@@ -103,8 +111,8 @@ angular.module('cellarium', ['ngRoute'])
                     });
             };
 
-            var deleteBeer = function (beer, fn) {
-                $http.delete(url + '/' + beer.beer_id)
+            var deleteBeer = function (user, beer, fn) {
+                $http.delete(urlFor(user, beer.beer_id))
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         flash.error("Delete of \"" + beer.brewery + " " + beer.name + "\" failed");
@@ -112,8 +120,8 @@ angular.module('cellarium', ['ngRoute'])
                     });
             };
 
-            var putBeer = function (beer, fn) {
-                $http.put(url + '/' + beer.beer_id, beer)
+            var putBeer = function (user, beer, fn) {
+                $http.put(urlFor(user, beer.beer_id), beer)
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         flash.error("Save of \"" + beer.brewery + " " + beer.name + "\" failed");
@@ -121,8 +129,8 @@ angular.module('cellarium', ['ngRoute'])
                     });
             };
 
-            var postBeer = function (beer, fn) {
-                $http.post(url, beer)
+            var postBeer = function (user, beer, fn) {
+                $http.post(urlFor(user), beer)
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         flash.error("Save of \"" + beer.brewery + " " + beer.name + "\" failed");
@@ -130,8 +138,8 @@ angular.module('cellarium', ['ngRoute'])
                     });
             };
 
-            var getBeer = function (beerId, fn) {
-                $http.get(url + '/' + beerId)
+            var getBeer = function (user, beerId, fn) {
+                $http.get(urlFor(user, beerId))
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         flash.error("Unable to fetch beer details")
@@ -139,13 +147,13 @@ angular.module('cellarium', ['ngRoute'])
                     });
             };
 
-            var saveBeer = function (beer, fn) {
+            var saveBeer = function (user, beer, fn) {
                 beer = applyDefaults(beer);
 
                 if (beer.beer_id) {
-                    putBeer(beer, fn);
+                    putBeer(user, beer, fn);
                 } else {
-                    postBeer(beer, fn);
+                    postBeer(user, beer, fn);
                 }
             };
 
@@ -157,16 +165,17 @@ angular.module('cellarium', ['ngRoute'])
             }
         }])
 
-    .controller('ListCtrl', ['$scope', 'beerApi', 'flash', 
-        function($scope, beerApi, flash) {
+    .controller('ListCtrl', ['$scope', '$routeParams', 'beerApi', 'flash', 
+        function($scope, $routeParams, beerApi, flash) {
+            
             var updateBeerList = function() {
-                beerApi.getBeers(function(data) {
+                beerApi.getBeers($routeParams.user, function(data) {
                     $scope.beers = data;
                 });
             }
     
             $scope.destroy = function(beer) {
-                beerApi.deleteBeer(beer, function() {
+                beerApi.deleteBeer($routeParams.user, beer, function() {
                     updateBeerList();
                 });
             };
@@ -187,13 +196,13 @@ angular.module('cellarium', ['ngRoute'])
             }
 
             $scope.destroy = function() {
-                beerApi.deleteBeer($scope.beer, function() {
+                beerApi.deleteBeer($routeParams.user, $scope.beer, function() {
                     $location.path('/');
                 });
             };
 
             $scope.save = function() {
-                beerApi.saveBeer($scope.beer, function() {
+                beerApi.saveBeer($routeParams.user, $scope.beer, function() {
                     $location.path('/');
                 });
             };
