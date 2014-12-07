@@ -3,21 +3,20 @@ angular.module('cellarium', ['ngRoute'])
     .config(['$routeProvider', 
         function($routeProvider) {
             $routeProvider
-                .when('/:user', {
+                .when('/', {
                     controller:'ListCtrl',
                     templateUrl:'templates/list.html'
                 })
-                .when('/:user/edit/:beerId', {
+                .when('/edit/:beerId', {
                     controller:'DetailsCtrl',
                     templateUrl:'templates/detail.html'
                 })
-                .when('/:user/new', {
+                .when('/new', {
                     controller:'DetailsCtrl',
                     templateUrl:'templates/detail.html'
                 })
                 .otherwise({
-                    // TODO: once login is implemented, redirect here
-                    redirectTo:'/kjetil'
+                    redirectTo:'/'
                 });
         }])
 
@@ -165,17 +164,17 @@ angular.module('cellarium', ['ngRoute'])
             }
         }])
 
-    .controller('ListCtrl', ['$scope', '$routeParams', 'beerApi', 'flash', 
-        function($scope, $routeParams, beerApi, flash) {
+    .controller('ListCtrl', ['$scope', 'beerApi', 'flash', 
+        function($scope, beerApi, flash) {
             
             var updateBeerList = function() {
-                beerApi.getBeers($routeParams.user, function(data) {
+                beerApi.getBeers('kjetil', function(data) {
                     $scope.beers = data;
                 });
             }
     
             $scope.destroy = function(beer) {
-                beerApi.deleteBeer($routeParams.user, beer, function() {
+                beerApi.deleteBeer('kjetil', beer, function() {
                     updateBeerList();
                 });
             };
@@ -188,7 +187,7 @@ angular.module('cellarium', ['ngRoute'])
             $scope.defaults = beerDefaults;
 
             if ($routeParams.beerId) {
-                beerApi.getBeer($routeParams.beerId, function(data) {
+                beerApi.getBeer('kjetil', $routeParams.beerId, function(data) {
                     $scope.beer = data;
                 });
             } else {
@@ -196,13 +195,13 @@ angular.module('cellarium', ['ngRoute'])
             }
 
             $scope.destroy = function() {
-                beerApi.deleteBeer($routeParams.user, $scope.beer, function() {
+                beerApi.deleteBeer('kjetil', $scope.beer, function() {
                     $location.path('/');
                 });
             };
 
             $scope.save = function() {
-                beerApi.saveBeer($routeParams.user, $scope.beer, function() {
+                beerApi.saveBeer('kjetil', $scope.beer, function() {
                     $location.path('/');
                 });
             };
