@@ -1,4 +1,4 @@
-angular.module('kjeller', ['ngRoute'])
+angular.module('cellarium', ['ngRoute'])
 
     .config(['$routeProvider', 
         function($routeProvider) {

@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
-  config.vm.hostname = "kjeller"
+  config.vm.hostname = "cellarium-box"
 
   config.vm.provision "shell", inline: <<-SCRIPT
     sudo apt-get install python-pip -y
@@ -23,5 +23,5 @@ SCRIPT
 
   config.vm.network "forwarded_port", guest: 4321, host: 4321 # backend
   config.vm.network "forwarded_port", guest: 8000, host: 8000 # frontend
-  config.vm.synced_folder "", "/home/vagrant/kjellerapp"
+  config.vm.synced_folder "", "/home/vagrant/cellarium"
 end
