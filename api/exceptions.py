@@ -4,13 +4,13 @@ from werkzeug.exceptions import HTTPException
 import abc
 
 
-class KjellerException(HTTPException):
+class CellariumException(HTTPException):
 	"Base class for Exceptions"
 
 	_metaclass__  = abc.ABCMeta
 
 
-class BeerNotFoundException(KjellerException):
+class BeerNotFoundException(CellariumException):
     code = 404
     
     def __init__(self, beer_id):

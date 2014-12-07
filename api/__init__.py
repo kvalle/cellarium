@@ -3,19 +3,20 @@
 from flask import Flask, make_response, jsonify
 from flask.ext.restful import Api
 
-from exceptions import KjellerException
+from exceptions import CellariumException
 
-class KjellerApi(Api):
+
+class CellariumApi(Api):
     def handle_error(self, e):
-        if isinstance(e, KjellerException):
+        if isinstance(e, CellariumException):
             data = {"message": e.description}
             return self.make_response(data, e.code)
 
-        return super(KjellerApi, self).handle_error(e)
+        return super(CellariumApi, self).handle_error(e)
 
 
 app = Flask(__name__)
-api = KjellerApi(app)
+api = CellariumApi(app)
 
 
 @app.errorhandler(404)
