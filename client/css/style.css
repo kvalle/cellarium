@@ -79,6 +79,9 @@ body {
 }
 
 
+.list-actions {
+  width: 80px;
+}
 
 
 .search-query {
