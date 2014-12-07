@@ -167,7 +167,6 @@ angular.module('kjeller', ['ngRoute'])
     
             $scope.destroy = function(beer) {
                 beerApi.deleteBeer(beer, function() {
-                    flash.success("Deleted \"" + beer.brewery + " " + beer.name + "\"");
                     updateBeerList();
                 });
             };
@@ -189,19 +188,12 @@ angular.module('kjeller', ['ngRoute'])
 
             $scope.destroy = function() {
                 beerApi.deleteBeer($scope.beer, function() {
-                    flash.success("Deleted \"" + $scope.beer.brewery + " " + $scope.beer.name + "\"");
                     $location.path('/');
                 });
             };
 
             $scope.save = function() {
                 beerApi.saveBeer($scope.beer, function() {
-                    if ($scope.beer.beer_id) {
-                        flash.success("Updated \"" + $scope.beer.brewery + " " + $scope.beer.name + "\"");
-                    } else {
-                        flash.success("Added \"" + $scope.beer.brewery + " " + $scope.beer.name + "\"");
-                    }
-                    
                     $location.path('/');
                 });
             };
