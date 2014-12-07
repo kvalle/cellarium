@@ -24,7 +24,6 @@ def ucode(string):
     return str(string).encode('utf-8')
 
 def get_beer(beer_id):
-    print "getting " + str(beer_id)
     try:
         return flask.g.db[ucode(beer_id)]
     except KeyError:
