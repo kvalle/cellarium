@@ -31,14 +31,14 @@ parser.add_argument('vintage',
 
 class Beer(Resource):
     def get(self, user, beer_id):
-        return repo.get_beer(beer_id)
+        return repo.get_beer(user, beer_id)
 
     def delete(self, user, beer_id):
-        repo.delete_beer(beer_id)
+        repo.delete_beer(user, beer_id)
         return '', 204
 
     def put(self, user, beer_id):
-        beer = repo.update_beer(beer_id, parser.parse_args())
+        beer = repo.update_beer(user, beer_id, parser.parse_args())
         return beer, 201
 
 

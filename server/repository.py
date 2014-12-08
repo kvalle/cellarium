@@ -48,7 +48,7 @@ def add_beer(user, beer):
     flask.g.db[bid] = beer
     return flask.g.db[bid]
 
-def update_beer(beer_id, beer):
+def update_beer(user, beer_id, beer):
     beer_id = ucode(beer_id)
     beer["beer_id"] = beer_id
     if beer_id not in flask.g.db:
