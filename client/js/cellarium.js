@@ -184,6 +184,8 @@ angular.module('cellariumApp', ['ngRoute'])
             $scope.add = function(beer) {
                 beerApi.saveBeer('kjetil', beer, function() {
                     updateBeerList();
+                    $scope.beerForm.$setPristine();
+                    $scope.beerForm.$setUntouched();
                     $scope.beer = {};
                 });
             };
