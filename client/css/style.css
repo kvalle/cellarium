@@ -99,9 +99,14 @@ body {
 	border-radius: 4px;
 }
 
-a.danger {
-  color: #d9534f;
+a.danger { color: #d9534f; }
+a.danger:hover { color: #c22521; }
+a.faded { color: #CECECE; }
+
+.beer-list .form-group {
+  margin-bottom: 0px;
 }
-a.danger:hover {
-  color: #c22521;
+
+.beer-count {
+  max-width: 100px;
 }

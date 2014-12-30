@@ -10,100 +10,102 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form name="beerForm" role="form">
-        <div class="table-responsive">
-            <table class="beer-list table table-hover">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Brewery</th>
-                        <th>Name</th>
-                        <th>Vintage</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="beer in beers | filter:search | orderBy:'name'">
-                        <td><span class="pull-right badge alert-info">{{beer.count}}</span></td>
-                        <td>{{beer.brewery}}</td>
-                        <td>{{beer.name}}</td>
-                        <td>{{beer.vintage}}</td>
-                        <td class="list-actions">
-                            <a ng-href="#/edit/{{beer.beer_id}}" data-placement="top" title="Edit" tooltip>
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 
-                            </a>
-                            <a ng-click="destroy(beer)" class="danger" data-placement="top" title="Delete" tooltip>
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 
-                            </a>
-                        </td>
-                    </tr>
+        <form name="beerForm" class="form-horizontal" role="form">
+            <div class="table-responsive">
+                <table class="beer-list table table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Brewery</th>
+                            <th>Name</th>
+                            <th>Vintage</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                    <tr>
-                        <td>
-                            <div class="form-group" ng-class="{'has-error': beerForm.count.$invalid && !beerForm.count.$pristine}">
-                                <div class="col-sm-12">
-                                    <input 
-                                        class="form-control" 
-                                        type="text" 
-                                        name="count" 
-                                        placeholder="{{defaults.count}}" 
-                                        ng-model="beer.count" 
-                                        ng-pattern="/^\d*$/">
+                        <tr ng-repeat="beer in beers | filter:search | orderBy:'name'">
+                            <td><span class="pull-right badge alert-info">{{beer.count}}</span></td>
+                            <td>{{beer.brewery}}</td>
+                            <td>{{beer.name}}</td>
+                            <td>{{beer.vintage}}</td>
+                            <td class="list-actions">
+                                <a ng-href="#/edit/{{beer.beer_id}}" data-placement="top" title="Edit" tooltip>
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 
+                                </a>
+                                <a ng-click="destroy(beer)" class="danger" data-placement="top" title="Delete" tooltip>
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> 
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="form-group beer-count" ng-class="{'has-error': beerForm.count.$invalid && !beerForm.count.$pristine}">
+                                    <div class="col-sm-12 form-group-sm">
+                                        <input 
+                                            class="form-control" 
+                                            type="text" 
+                                            name="count" 
+                                            placeholder="{{defaults.count}}" 
+                                            ng-model="beer.count" 
+                                            ng-pattern="/^\d*$/">
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group" ng-class="{'has-error': beerForm.brewery.$invalid && !beerForm.brewery.$pristine}">
-                                <div class="col-sm-12">
-                                    <input 
-                                        class="form-control" 
-                                        type="text" 
-                                        name="brewery" 
-                                        ng-model="beer.brewery" 
-                                        placeholder="Brewery"
-                                        required>
+                            </td>
+                            <td>
+                                <div class="form-group" ng-class="{'has-error': beerForm.brewery.$invalid && !beerForm.brewery.$pristine}">
+                                    <div class="col-sm-12 form-group-sm">
+                                        <input 
+                                            class="form-control" 
+                                            type="text" 
+                                            name="brewery" 
+                                            ng-model="beer.brewery" 
+                                            placeholder="Brewery"
+                                            required>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group" ng-class="{'has-error': beerForm.name.$invalid && !beerForm.name.$pristine}">
-                                <div class="col-sm-12">
-                                    <input
-                                        class="form-control" 
-                                        type="text" 
-                                        name="name" 
-                                        ng-model="beer.name" 
-                                        placeholder="Name"
-                                        required>
+                            </td>
+                            <td>
+                                <div class="form-group" ng-class="{'has-error': beerForm.name.$invalid && !beerForm.name.$pristine}">
+                                    <div class="col-sm-12 form-group-sm">
+                                        <input
+                                            class="form-control" 
+                                            type="text" 
+                                            name="name" 
+                                            ng-model="beer.name" 
+                                            placeholder="Name"
+                                            required>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group" ng-class="{'has-error': beerForm.vintage.$invalid && !beerForm.vintage.$pristine}">
-                                <div class="col-sm-12">
-                                    <input 
-                                        class="form-control" 
-                                        type="text" 
-                                        name="vintage" 
-                                        placeholder="{{defaults.year}}" 
-                                        ng-model="beer.vintage" 
-                                        ng-pattern="/^\d{4}$/">
+                            </td>
+                            <td>
+                                <div class="form-group" ng-class="{'has-error': beerForm.vintage.$invalid && !beerForm.vintage.$pristine}">
+                                    <div class="col-sm-12 form-group-sm">
+                                        <input 
+                                            class="form-control" 
+                                            type="text" 
+                                            name="vintage" 
+                                            placeholder="{{defaults.year}}" 
+                                            ng-model="beer.vintage" 
+                                            ng-pattern="/^\d{4}$/">
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <a ng-click="add(beer)" ng-disabled="beerForm.$invalid" ng-class="{'faded': beerForm.$invalid}" data-placement="top" title="Add new" tooltip>
-                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
-                                    </a>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-sm-12 form-group-sm">
+                                        <a ng-click="add(beer)" ng-disabled="beerForm.$invalid" ng-class="{'faded': beerForm.$invalid}" data-placement="top" title="Add new" tooltip>
+                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </form>
-                    </tr>
-                </tbody>
-            </table>
-        </div> <!-- ./table-responsive -->
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div> <!-- ./table-responsive -->
+        </form>
     </div> <!-- ./col-md-12 -->
 </div> <!-- ./row -->
