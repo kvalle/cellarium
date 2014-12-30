@@ -1,18 +1,18 @@
-angular.module('cellarium', ['ngRoute'])
+angular.module('cellariumApp', ['ngRoute'])
 
     .config(['$routeProvider', 
         function($routeProvider) {
             $routeProvider
                 .when('/', {
-                    controller:'ListCtrl',
+                    controller:'ListController',
                     templateUrl:'templates/list.html'
                 })
                 .when('/edit/:beerId', {
-                    controller:'DetailsCtrl',
+                    controller:'DetailsController',
                     templateUrl:'templates/detail.html'
                 })
                 .when('/new', {
-                    controller:'DetailsCtrl',
+                    controller:'DetailsController',
                     templateUrl:'templates/detail.html'
                 })
                 .otherwise({
@@ -55,7 +55,7 @@ angular.module('cellarium', ['ngRoute'])
             };
         }])
 
-    .controller('FlashCtrl', ['$scope', 'flash',
+    .controller('FlashController', ['$scope', 'flash',
         function($scope, flash) {
             $scope.message = flash.message;
             $scope.clear = flash.clear;
@@ -164,7 +164,7 @@ angular.module('cellarium', ['ngRoute'])
             }
         }])
 
-    .controller('ListCtrl', ['$scope', 'beerApi', 'flash', 'beerDefaults', 
+    .controller('ListController', ['$scope', 'beerApi', 'flash', 'beerDefaults', 
         function($scope, beerApi, flash, beerDefaults) {
             $scope.defaults = beerDefaults;
             $scope.beer = {};
@@ -191,7 +191,7 @@ angular.module('cellarium', ['ngRoute'])
             updateBeerList();
         }])
 
-    .controller('DetailsCtrl', ['$scope', '$location', '$routeParams', 'beerApi', 'beerDefaults', 'flash', 
+    .controller('DetailsController', ['$scope', '$location', '$routeParams', 'beerApi', 'beerDefaults', 'flash', 
         function($scope, $location, $routeParams, beerApi, beerDefaults, flash) {
             $scope.defaults = beerDefaults;
 
@@ -203,14 +203,14 @@ angular.module('cellarium', ['ngRoute'])
                 $scope.beer = {};
             }
 
-            $scope.destroy = function() {
-                beerApi.deleteBeer('kjetil', $scope.beer, function() {
+            $scope.destroy = function(beer) {
+                beerApi.deleteBeer('kjetil', beer, function() {
                     $location.path('/');
                 });
             };
 
-            $scope.save = function() {
-                beerApi.saveBeer('kjetil', $scope.beer, function() {
+            $scope.save = function(beer) {
+                beerApi.saveBeer('kjetil', beer, function() {
                     $location.path('/');
                 });
             };
