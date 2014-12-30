@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form name="beerForm" class="form-horizontal" role="form">
+        <form name="beerForm" ng-submit="add(beer)" class="form-horizontal" role="form">
             <div class="table-responsive">
                 <table class="beer-list table table-hover">
                     <thead>
@@ -44,6 +44,7 @@
                                 <div class="form-group beer-count" ng-class="{'has-error': beerForm.count.$invalid && !beerForm.count.$pristine}">
                                     <div class="col-sm-12 form-group-sm">
                                         <input 
+                                            id="newBeerCount"
                                             class="form-control" 
                                             type="text" 
                                             name="count" 
@@ -57,6 +58,7 @@
                                 <div class="form-group" ng-class="{'has-error': beerForm.brewery.$invalid && !beerForm.brewery.$pristine}">
                                     <div class="col-sm-12 form-group-sm">
                                         <input 
+                                            id="newBeerBrewery"
                                             class="form-control" 
                                             type="text" 
                                             name="brewery" 
@@ -70,6 +72,7 @@
                                 <div class="form-group" ng-class="{'has-error': beerForm.name.$invalid && !beerForm.name.$pristine}">
                                     <div class="col-sm-12 form-group-sm">
                                         <input
+                                            id="newBeerName"
                                             class="form-control" 
                                             type="text" 
                                             name="name" 
@@ -83,6 +86,7 @@
                                 <div class="form-group" ng-class="{'has-error': beerForm.vintage.$invalid && !beerForm.vintage.$pristine}">
                                     <div class="col-sm-12 form-group-sm">
                                         <input 
+                                            id="newBeerVintage"
                                             class="form-control" 
                                             type="text" 
                                             name="vintage" 
@@ -95,9 +99,16 @@
                             <td>
                                 <div class="form-group">
                                     <div class="col-sm-12 form-group-sm">
-                                        <a ng-click="add(beer)" ng-disabled="beerForm.$invalid" ng-class="{'faded': beerForm.$invalid}" data-placement="top" title="Add new" tooltip>
+                                        <button
+                                            type="submit"
+                                            value="+" 
+                                            class="btn btn-default btn-sm"
+                                            ng-disabled="beerForm.$invalid" 
+                                            data-placement="top" 
+                                            title="Add new" tooltip>
+                                        
                                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </td>

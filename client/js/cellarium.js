@@ -164,8 +164,8 @@ angular.module('cellariumApp', ['ngRoute'])
             }
         }])
 
-    .controller('ListController', ['$scope', 'beerApi', 'flash', 'beerDefaults', 
-        function($scope, beerApi, flash, beerDefaults) {
+    .controller('ListController', ['$scope', 'beerApi', 'flash', 'beerDefaults', '$timeout', 
+        function($scope, beerApi, flash, beerDefaults, $timeout) {
             $scope.defaults = beerDefaults;
             $scope.beer = {};
             
@@ -187,6 +187,9 @@ angular.module('cellariumApp', ['ngRoute'])
                     $scope.beerForm.$setPristine();
                     $scope.beerForm.$setUntouched();
                     $scope.beer = {};
+                    $timeout(function() {
+                        angular.element('#newBeerCount').focus();
+                    }); 
                 });
             };
     
