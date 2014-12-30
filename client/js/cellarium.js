@@ -164,8 +164,10 @@ angular.module('cellarium', ['ngRoute'])
             }
         }])
 
-    .controller('ListCtrl', ['$scope', 'beerApi', 'flash', 
-        function($scope, beerApi, flash) {
+    .controller('ListCtrl', ['$scope', 'beerApi', 'flash', 'beerDefaults', 
+        function($scope, beerApi, flash, beerDefaults) {
+            $scope.defaults = beerDefaults;
+            $scope.beer = {};
             
             var updateBeerList = function() {
                 beerApi.getBeers('kjetil', function(data) {
@@ -176,6 +178,13 @@ angular.module('cellarium', ['ngRoute'])
             $scope.destroy = function(beer) {
                 beerApi.deleteBeer('kjetil', beer, function() {
                     updateBeerList();
+                });
+            };
+
+            $scope.add = function(beer) {
+                beerApi.saveBeer('kjetil', beer, function() {
+                    updateBeerList();
+                    $scope.beer = {};
                 });
             };
     
