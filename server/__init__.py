@@ -5,7 +5,6 @@ from flask.ext.restful import Api
 
 from exceptions import CellariumException
 
-
 class CellariumApi(Api):
     def handle_error(self, e):
         if isinstance(e, CellariumException):
@@ -25,4 +24,5 @@ def general_page_not_found(e):
     return make_response(response, 404)
 
 
+import authentication
 import views

@@ -16,7 +16,7 @@ def before_request():
     if 'user' in request.view_args: 
         user = request.view_args['user']
         user = re.sub(r'\W+', '', user)
-        flask.g.db = shelve.open('db/{}.db'.format(user))
+        flask.g.db = shelve.open('db/beers/{}.db'.format(user))
 
 @app.teardown_request
 def teardown_request(exception):
