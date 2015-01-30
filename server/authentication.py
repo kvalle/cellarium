@@ -3,33 +3,44 @@
 import shelve
 import flask
 from flask.ext.restful import reqparse, Resource
-from flask.ext.httpauth import HTTPBasicAuth
 from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired, BadSignature
 
+from functools import wraps
+from flask import request, Response
+
 from server import app, api
 
-auth = HTTPBasicAuth()
 
-# Repository
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth:
+            return abort_401()
 
-@auth.verify_password
-def authenticate(token, password):
+        user = authenticate_token(token=auth.username)
+        if not user:
+            return abort_401()
+            
+        flask.g.user = user
+
+        return f(*args, **kwargs)
+    return decorated
+
+def authenticate_token(token):
     if not token_is_stored(token):
-        return False
+        return None
 
     data = verify_auth_token(token)
     if not data:
-        return False
+        return None
 
-    user = get_user(data["username"])
-    if not user:
-        return False
+    return get_user(data["username"])
 
-    flask.g.user = user
-    return True
-
+def abort_401():
+    return Response('Authentication required', 401, {'WWW-Authenticate': 'Token'})
 
 def ucode(string):
     "Hack because shelve dosn't support unicode keys"
@@ -134,7 +145,7 @@ class Token(Resource):
 
 class RevokeToken(Resource):
 
-    @auth.login_required
+    @requires_auth
     def delete(self, token):
         delete_token(token)
         return '', 204
