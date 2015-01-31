@@ -16,12 +16,16 @@ from server import app, api
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth:
+        if not 'X-Access-Token' in request.headers:
+            print("> NO TOKEN")
             return abort_401()
 
-        user = authenticate_token(token=auth.username)
+        token = request.headers['X-Access-Token'] 
+        print("> TOKEN: %s" % token)
+        
+        user = authenticate_token(token)
         if not user:
+            print("> NO USER")
             return abort_401()
             
         flask.g.user = user
@@ -140,7 +144,10 @@ class Token(Resource):
         
         token = generate_auth_token(username)
         store_token(token)
-        return {"token": token.decode('ascii')}, 200
+        return {
+            "token": token.decode('ascii'),
+            "username": username
+        }, 200
 
 
 class RevokeToken(Resource):

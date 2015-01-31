@@ -1,0 +1,21 @@
+<form name="loginForm" class="form-horizontal" role="form">
+    <div class="form-group">
+        <label for="usernameInput" class="col-sm-2 control-label">Username</label>
+        <div class="col-sm-10">
+            <input id="usernameInput" class="form-control" type="text" name="username" ng-model="username">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="passwordInput" class="col-sm-2 control-label">Password</label>
+        <div class="col-sm-10">
+            <input id="passwordInput" class="form-control" type="password" name="password" ng-model="password" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button class="btn btn-primary" ng-click="login()">Log in</button>
+        </div>
+    </div>
+</form>
