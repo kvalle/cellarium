@@ -7,7 +7,7 @@ angular.module('cellariumApp', ['ngRoute'])
                     controller: 'ListController',
                     templateUrl: 'templates/list.html',
                     resolve: {
-                        auth: function ($q, authenticationSvc) {
+                        auth: ['$q', 'authenticationSvc', function ($q, authenticationSvc) {
                             var userInfo = authenticationSvc.getUserInfo();
                             if (userInfo) {
                                 return $q.when(userInfo);
@@ -15,7 +15,7 @@ angular.module('cellariumApp', ['ngRoute'])
                                 console.log("RESOLVING /: No userInfo found: ", userInfo)
                                 return $q.reject({ authenticated: false });
                             }
-                        }
+                        }]
                     }
                 })
                 .when('/edit/:beerId', {
@@ -116,6 +116,8 @@ angular.module('cellariumApp', ['ngRoute'])
 
             $rootScope.$on("$routeChangeError", function (event, current, previous, eventObj) {
                 if (eventObj.authenticated === false) {
+                    // TODO: strip any flash messages
+                    // TODO: add flash: "you need to log in"
                     $location.path("/login");
                 }
             });
