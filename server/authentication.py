@@ -17,18 +17,15 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if not 'X-Access-Token' in request.headers:
-            print("> NO TOKEN")
             return abort_401()
 
         token = request.headers['X-Access-Token'] 
-        print("> TOKEN: %s" % token)
-        
         user = authenticate_token(token)
         if not user:
-            print("> NO USER")
             return abort_401()
             
         flask.g.user = user
+        flask.g.token = token
 
         return f(*args, **kwargs)
     return decorated
@@ -149,14 +146,11 @@ class Token(Resource):
             "username": username
         }, 200
 
-
-class RevokeToken(Resource):
-
     @requires_auth
-    def delete(self, token):
-        delete_token(token)
+    def delete(self):
+        token = None
+        delete_token(flask.g.token)
         return '', 204
-
 
 class Users(Resource):
 
@@ -173,5 +167,4 @@ class Users(Resource):
 
 
 api.add_resource(Token,       '/api/auth/token')
-api.add_resource(RevokeToken, '/api/auth/token/<string:token>')
 api.add_resource(Users,       '/api/auth/users')

@@ -4,50 +4,83 @@ angular.module('cellariumApp', ['ngRoute'])
         function($routeProvider) {
             $routeProvider
                 .when('/', {
-                    controller:'ListController',
-                    templateUrl:'templates/list.html',
+                    controller: 'ListController',
+                    templateUrl: 'templates/list.html',
                     resolve: {
                         auth: function ($q, authenticationSvc) {
                             var userInfo = authenticationSvc.getUserInfo();
                             if (userInfo) {
                                 return $q.when(userInfo);
                             } else {
+                                console.log("RESOLVING /: No userInfo found: ", userInfo)
                                 return $q.reject({ authenticated: false });
                             }
                         }
                     }
                 })
                 .when('/edit/:beerId', {
-                    controller:'DetailsController',
-                    templateUrl:'templates/detail.html'
+                    controller: 'DetailsController',
+                    templateUrl: 'templates/detail.html'
+                    // TODO: add auth
                 })
                 .when('/new', {
-                    controller:'DetailsController',
-                    templateUrl:'templates/detail.html'
+                    controller: 'DetailsController',
+                    templateUrl: 'templates/detail.html'
+                    // TODO: add auth
                 })
                 .when('/login', {
-                    controller:'LoginController',
-                    templateUrl:'templates/login.html'
+                    controller: 'LoginController',
+                    templateUrl: 'templates/login.html'
+                })
+                .when('/logout', {
+                    controller: 'LogoutController',
+                    template: ''
                 })
                 .otherwise({
-                    redirectTo:'/'
+                    redirectTo: '/'
                 });
         }])
 
-    .factory('authHttpResponseInterceptor',['$q','$location',function($q,$location){
-        return {
-            response: function(response){
-                return response || $q.when(response);
-            },
-            responseError: function(rejection) {
-                if (rejection.status === 401) {
-                    console.log("Response Error 401", rejection);
-                    $location.path('/login');
+    .config(['$httpProvider',
+        function($httpProvider) {
+            $httpProvider.interceptors.push('authHttpResponseInterceptor');
+        }])
+
+    .factory('authHttpResponseInterceptor',['$q','$location', '$injector',
+        function($q, $location, $injector) {
+            return {
+                request: function(config) {
+                    var authenticationSvc = $injector.get('authenticationSvc');
+                    var user = authenticationSvc.getUserInfo();
+                    if (user) {
+                        config.headers['X-Access-Token'] = user.token;
+                    }
+                    console.log("DOING REQUEST: ", config);
+                    return config || $q.when(config);
+                },
+                response: function(response){
+                    return response || $q.when(response);
+                },
+                responseError: function(rejection) {
+                    if (rejection.status === 401) {
+                        console.log("CAUGHT 401 RESPONSE: ", rejection);
+                        $location.path('/login');
+                    }
+                    return $q.reject(rejection);
                 }
-                return $q.reject(rejection);
             }
-        }
-    }])
+        }])
+
+    .controller("LogoutController", ["$location", "authenticationSvc",
+        function ($location, authenticationSvc) {
+            authenticationSvc.logout()
+                .then(function(result) {
+                    console.log("LOGGED OUT: ", result);
+                    $location.path('/login');             
+                }, function(error) {
+                    console.error("NOT LOGGED OUT: ", error);
+                });
+        }])
 
     .controller("LoginController", ["$scope", "$location", "$window", "authenticationSvc",
         function ($scope, $location, $window, authenticationSvc) {
@@ -57,23 +90,13 @@ angular.module('cellariumApp', ['ngRoute'])
                 authenticationSvc.login($scope.username, $scope.password)
                     .then(function (result) {
                         $scope.userInfo = result;
-                        console.log("userInfo:", $scope.userInfo)
+                        console.log("LOGIN SUCCESS: ", $scope.userInfo)
                         $location.path("/");
                     }, function (error) {
-                        console.log("TODO: display login error on page");
-                        console.error(error);
+                        // TODO: display login error on page
+                        console.log("LOGIN FAILED: ", error);
                     });
             };
-
-            $scope.cancel = function () {
-                $scope.username = "";
-                $scope.password = "";
-            };
-        }])
-
-    .config(['$httpProvider',
-        function($httpProvider) {
-            $httpProvider.interceptors.push('authHttpResponseInterceptor');
         }])
 
     .run(['$rootScope', '$location', 'flash',
@@ -122,7 +145,7 @@ angular.module('cellariumApp', ['ngRoute'])
 
                 $http({
                     method: "DELETE",
-                    url: "/api/auth/token/"+userInfo.accessToken
+                    url: "/api/auth/token"
                 }).then(function (result) {
                     userInfo = null;
                     $window.sessionStorage["userInfo"] = null;
@@ -203,10 +226,8 @@ angular.module('cellariumApp', ['ngRoute'])
             }
         })
 
-    .factory('beerApi', ['$http', 'beerDefaults', 'flash', 'authenticationSvc',
-        function($http, defaults, flash, authenticationSvc) {
-            var userInfo = authenticationSvc.getUserInfo()
-            $http.defaults.headers.common = {'X-Access-Token': userInfo.token};
+    .factory('beerApi', ['$http', 'beerDefaults', 'flash',
+        function($http, defaults, flash) {
 
             var urlFor = function (user, beerId) {
                 var url = '/api/' + user + '/beers';
@@ -229,17 +250,7 @@ angular.module('cellariumApp', ['ngRoute'])
             };
 
             var getBeers = function (user, fn) {
-                var token = authenticationSvc.getUserInfo().token;
-                var request = {
-                    url: urlFor(user),
-                    method: "GET",
-                    withCredentials: true,
-                    headers: {
-                        'Authorization': 'Basic '+token+':blank'
-                    }
-                }
-                console.log(request);
-                $http(request).success(fn)
+                $http.get(urlFor(user)).success(fn)
                     .error(function(data, status, headers, config) {
                         console.error(status, data);
                         flash.error("Unable to retrieve list of beers");
