@@ -89,8 +89,8 @@ angular.module('cellariumApp', ['ngRoute'])
                 });
         }])
 
-    .controller("LoginController", ["$scope", "$location", "$window", "authenticationSvc",
-        function ($scope, $location, $window, authenticationSvc) {
+    .controller("LoginController", ["$scope", "$location", "$window", "authenticationSvc", "flash",
+        function ($scope, $location, $window, authenticationSvc, flash) {
             $scope.userInfo = null;
 
             $scope.login = function () {
@@ -98,9 +98,10 @@ angular.module('cellariumApp', ['ngRoute'])
                     .then(function (result) {
                         $scope.userInfo = result;
                         console.log("LOGIN SUCCESS: ", $scope.userInfo)
+                        flash.clear()
                         $location.path("/");
                     }, function (error) {
-                        // TODO: display login error on page
+                        flash.error("Bad username or password");
                         console.log("LOGIN FAILED: ", error);
                     });
             };
