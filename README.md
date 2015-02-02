@@ -22,3 +22,6 @@ Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
 		passlib
 		flask-restful (dev,	http://flask-restful.readthedocs.org/en/latest/installation.html)
+
+- clean up naming within modules
+- clean up dependencies on flash service
