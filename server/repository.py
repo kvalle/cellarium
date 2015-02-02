@@ -11,18 +11,17 @@ from exceptions import BeerNotFoundException
 from flask import request
 from pprint import pprint as pp
 
-@app.before_request
-def before_request():
-    if 'user' in request.view_args: 
-        user = request.view_args['user']
-        user = re.sub(r'\W+', '', user)
-        flask.g.db = shelve.open('db/beers/{}.db'.format(user))
 
-@app.teardown_request
-def teardown_request(exception):
-    db = getattr(flask.g, 'db', False)
-    if db: 
-        db.close()
+class BeerDB:
+    def __init__(self, user):
+        self.path = 'db/beers/{}.db'.format(user)
+
+    def __enter__(self):
+        self.db = shelve.open(self.path)
+        return self.db
+
+    def __exit__(self, type, value, tb):
+        self.db.close()
 
 
 def ucode(string):
@@ -31,35 +30,43 @@ def ucode(string):
 
 def get_beer(user, beer_id):
     try:
-        return flask.g.db[ucode(beer_id)]
+        with BeerDB(user) as db:
+            return db[ucode(beer_id)]
     except KeyError:
         raise BeerNotFoundException(beer_id)
 
 def delete_beer(user, beer_id):
     beer_id = ucode(beer_id)
     try:
-        del flask.g.db[beer_id]
+        with BeerDB(user) as db:
+            del db[beer_id]
     except KeyError:
         abort(404, message="No beer with beer_id {} to delete".format(beer_id))
 
 def add_beer(user, beer):
     bid = next_id(user)
     beer["beer_id"] = bid
-    flask.g.db[bid] = beer
-    return flask.g.db[bid]
+    with BeerDB(user) as db:
+        db[bid] = beer
+    return beer
 
 def update_beer(user, beer_id, beer):
     beer_id = ucode(beer_id)
     beer["beer_id"] = beer_id
-    if beer_id not in flask.g.db:
-        abort(404, message="No beer found with beer_id {}".format(beer_id))
-    flask.g.db[beer_id] = beer
+
+    with BeerDB(user) as db:
+        if beer_id not in db:
+            abort(404, message="No beer found with beer_id {}".format(beer_id))
+        db[beer_id] = beer
+
     return beer
 
 def list_beers(user):
-    return flask.g.db.values()
+    with BeerDB(user) as db:
+        beers = {beer_id: db[beer_id] for beer_id in db}
+    return beers
 
 def next_id(user):
-    ids = [int(beer_id) for beer_id in flask.g.db.keys()]
+    with BeerDB(user) as db:
+        ids = [int(beer_id) for beer_id in db]
     return ucode(max(ids) + 1) if ids else ucode('1')
-
