@@ -2,9 +2,9 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip'])
 
     .config(['$routeProvider', 
         function($routeProvider) {
-            var authResolver = ['$q', 'authenticationSvc', 
-                function ($q, authenticationSvc) {
-                    var userInfo = authenticationSvc.getUserInfo();
+            var authResolver = ['$q', 'authentication', 
+                function ($q, authentication) {
+                    var userInfo = authentication.getUserInfo();
                     if (userInfo) {
                         return $q.when(userInfo);
                     } else {
@@ -56,8 +56,8 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip'])
         function($q, $location, $injector) {
             return {
                 request: function(config) {
-                    var authenticationSvc = $injector.get('authenticationSvc');
-                    var user = authenticationSvc.getUserInfo();
+                    var authentication = $injector.get('authentication');
+                    var user = authentication.getUserInfo();
                     if (user) {
                         config.headers['X-Access-Token'] = user.token;
                     }
@@ -77,9 +77,9 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip'])
             }
         }])
 
-    .controller("LogoutController", ["$location", "authenticationSvc",
-        function ($location, authenticationSvc) {
-            authenticationSvc.logout()
+    .controller("LogoutController", ["$location", "authentication",
+        function ($location, authentication) {
+            authentication.logout()
                 .then(function(result) {
                     console.log("LOGGED OUT: ", result);
                     $location.path('/login');             
@@ -88,12 +88,12 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip'])
                 });
         }])
 
-    .controller("LoginController", ["$scope", "$location", "$window", "authenticationSvc", "flash",
-        function ($scope, $location, $window, authenticationSvc, flash) {
+    .controller("LoginController", ["$scope", "$location", "$window", "authentication", "flash",
+        function ($scope, $location, $window, authentication, flash) {
             $scope.userInfo = null;
 
             $scope.login = function () {
-                authenticationSvc.login($scope.username, $scope.password)
+                authentication.login($scope.username, $scope.password)
                     .then(function (result) {
                         $scope.userInfo = result;
                         console.log("LOGIN SUCCESS: ", $scope.userInfo)
@@ -128,7 +128,7 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip'])
             });
         }])
 
-    .factory("authenticationSvc", ["$http", "$q", "$window",
+    .factory("authentication", ["$http", "$q", "$window",
         function ($http, $q, $window) {
             var userInfo;
 
