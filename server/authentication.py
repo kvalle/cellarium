@@ -78,6 +78,9 @@ def verify_password(username, password):
     user = get_user(username)
     return user and pwd_context.verify(password, user["password_hash"])
 
+def is_legal_username(username):
+    # TODO
+    return True
 
 ## Tokens
 
@@ -159,8 +162,12 @@ class Users(Resource):
 
     def post(self):
         user = parser.parse_args()
+
+        if not is_legal_username(user["username"]):
+            return {"message": "Bad username: only letters and numbers allowed."}, 403
+
         if get_user(user["username"]):
-            return {"message": "username already taken"}, 403
+            return {"message": "Username already taken."}, 403
 
         add_user(user.username, user.password)
         return {"username": user["username"]}, 201

@@ -5,7 +5,7 @@ import flask
 
 from server import api
 from server import repository as repo
-from server.authentication import requires_auth
+from server import authentication as auth
 
 
 parser = reqparse.RequestParser()
@@ -33,32 +33,37 @@ parser.add_argument('vintage',
 
 class Beer(Resource):
 
-    @requires_auth
-    def get(self, user, beer_id):
+    @auth.requires_auth
+    def get(self, beer_id):
+        user = flask.g.user["username"]
         return repo.get_beer(user, beer_id)
 
-    @requires_auth
-    def delete(self, user, beer_id):
+    @auth.requires_auth
+    def delete(self, beer_id):
+        user = flask.g.user["username"]
         repo.delete_beer(user, beer_id)
         return '', 204
 
-    @requires_auth
+    @auth.requires_auth
     def put(self, user, beer_id):
+        user = flask.g.user["username"]
         beer = repo.update_beer(user, beer_id, parser.parse_args())
         return beer, 201
 
 class BeerList(Resource):
 
-    @requires_auth
-    def get(self, user):
+    @auth.requires_auth
+    def get(self):
+        user = flask.g.user["username"]
         return repo.list_beers(user)
 
-    @requires_auth
-    def post(self, user):
+    @auth.requires_auth
+    def post(self):
         beer = parser.parse_args()
+        user = flask.g.user["username"]
         saved_beer = repo.add_beer(user, beer)
         return saved_beer, 201
 
 
-api.add_resource(BeerList, '/api/<string:user>/beers')
-api.add_resource(Beer,     '/api/<string:user>/beers/<string:beer_id>')
+api.add_resource(BeerList, '/api/beers')
+api.add_resource(Beer,     '/api/beers/<string:beer_id>')

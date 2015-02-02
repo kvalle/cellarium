@@ -231,8 +231,8 @@ angular.module('cellariumApp', ['ngRoute'])
     .factory('beerApi', ['$http', 'beerDefaults', 'flash',
         function($http, defaults, flash) {
 
-            var urlFor = function (user, beerId) {
-                var url = '/api/' + user + '/beers';
+            var urlFor = function (beerId) {
+                var url = '/api/beers';
                 if (beerId) {
                     url += '/' + beerId;
                 }
@@ -251,16 +251,16 @@ angular.module('cellariumApp', ['ngRoute'])
                 return beer;
             };
 
-            var getBeers = function (user, fn) {
-                $http.get(urlFor(user)).success(fn)
+            var getBeers = function (fn) {
+                $http.get(urlFor()).success(fn)
                     .error(function(data, status, headers, config) {
                         console.error(status, data);
                         flash.error("Unable to retrieve list of beers");
                     });
             };
 
-            var deleteBeer = function (user, beer, fn) {
-                $http.delete(urlFor(user, beer.beer_id))
+            var deleteBeer = function (beer, fn) {
+                $http.delete(urlFor(beer.beer_id))
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         flash.error("Delete of \"" + beer.brewery + " " + beer.name + "\" failed");
@@ -268,8 +268,8 @@ angular.module('cellariumApp', ['ngRoute'])
                     });
             };
 
-            var putBeer = function (user, beer, fn) {
-                $http.put(urlFor(user, beer.beer_id), beer)
+            var putBeer = function (beer, fn) {
+                $http.put(urlFor(beer.beer_id), beer)
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         flash.error("Save of \"" + beer.brewery + " " + beer.name + "\" failed");
@@ -277,8 +277,8 @@ angular.module('cellariumApp', ['ngRoute'])
                     });
             };
 
-            var postBeer = function (user, beer, fn) {
-                $http.post(urlFor(user), beer)
+            var postBeer = function (beer, fn) {
+                $http.post(urlFor(), beer)
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         flash.error("Save of \"" + beer.brewery + " " + beer.name + "\" failed");
@@ -286,8 +286,8 @@ angular.module('cellariumApp', ['ngRoute'])
                     });
             };
 
-            var getBeer = function (user, beerId, fn) {
-                $http.get(urlFor(user, beerId))
+            var getBeer = function (beerId, fn) {
+                $http.get(urlFor(beerId))
                     .success(fn)
                     .error(function(data, status, headers, config) {
                         flash.error("Unable to fetch beer details")
@@ -295,13 +295,13 @@ angular.module('cellariumApp', ['ngRoute'])
                     });
             };
 
-            var saveBeer = function (user, beer, fn) {
+            var saveBeer = function (beer, fn) {
                 beer = applyDefaults(beer);
 
                 if (beer.beer_id) {
-                    putBeer(user, beer, fn);
+                    putBeer(beer, fn);
                 } else {
-                    postBeer(user, beer, fn);
+                    postBeer(beer, fn);
                 }
             };
 
@@ -319,19 +319,19 @@ angular.module('cellariumApp', ['ngRoute'])
             $scope.beer = {};
             
             var updateBeerList = function() {
-                beerApi.getBeers('kjetil', function(data) {
+                beerApi.getBeers(function(data) {
                     $scope.beers = data;
                 });
             }
     
             $scope.destroy = function(beer) {
-                beerApi.deleteBeer('kjetil', beer, function() {
+                beerApi.deleteBeer(beer, function() {
                     updateBeerList();
                 });
             };
 
             $scope.add = function(beer) {
-                beerApi.saveBeer('kjetil', beer, function() {
+                beerApi.saveBeer(beer, function() {
                     updateBeerList();
                     $scope.beerForm.$setPristine();
                     $scope.beerForm.$setUntouched();
@@ -350,7 +350,7 @@ angular.module('cellariumApp', ['ngRoute'])
             $scope.defaults = beerDefaults;
 
             if ($routeParams.beerId) {
-                beerApi.getBeer('kjetil', $routeParams.beerId, function(data) {
+                beerApi.getBeer($routeParams.beerId, function(data) {
                     $scope.beer = data;
                 });
             } else {
@@ -358,13 +358,13 @@ angular.module('cellariumApp', ['ngRoute'])
             }
 
             $scope.destroy = function(beer) {
-                beerApi.deleteBeer('kjetil', beer, function() {
+                beerApi.deleteBeer(beer, function() {
                     $location.path('/');
                 });
             };
 
             $scope.save = function(beer) {
-                beerApi.saveBeer('kjetil', beer, function() {
+                beerApi.saveBeer(beer, function() {
                     $location.path('/');
                 });
             };
