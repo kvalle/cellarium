@@ -52,11 +52,18 @@ def ucode(string):
 
 ## Users
 
+class UserDB:
+    def __enter__(self):
+        self.db = shelve.open('db/users.db')
+        return self.db
+
+    def __exit__(self, type, value, tb):
+        self.db.close()
+
+
 def get_users():
-    db = shelve.open('db/users.db')
-    users = {user: db[user] for user in db}
-    db.close()
-    return users
+    with UserDB() as db:
+        return {user: db[user] for user in db}
 
 def get_user(username):
     users = get_users()
@@ -66,25 +73,38 @@ def get_user(username):
     user["username"] = username
     return user
 
-
 def add_user(username, password):
     if get_user(username):
         return False
 
-    db = shelve.open('db/users.db')
-    db[ucode(username)] = {
+    data = {
         "password_hash": pwd_context.encrypt(password)
     }
 
+    with UserDB() as db:
+        db[ucode(username)] = data
+
+def correct_password(user, password):
+    return pwd_context.verify(password, user["password_hash"])
+
 def verify_password(username, password):
     user = get_user(username)
-    return user and pwd_context.verify(password, user["password_hash"])
+    return user and correct_password(user, password)
 
 def is_legal_username(username):
     return re.match('^[\w_]+$', username)
-    
+
 
 ## Tokens
+
+class TokenDB:
+    def __enter__(self):
+        self.db = shelve.open('db/token.db')
+        return self.db
+
+    def __exit__(self, type, value, tb):
+        self.db.close()
+
 
 def generate_auth_token(username):
     expiration = app.config['TOKEN_EXPIRATION_TIME']
@@ -92,21 +112,17 @@ def generate_auth_token(username):
     return s.dumps({ 'username': username })
 
 def token_is_stored(token):
-    db = shelve.open('db/tokens.db')
-    stored = ucode(token) in db
-    db.close()
-    return stored
+    with TokenDB() as db:
+        return ucode(token) in db
 
 def store_token(token):
-    db = shelve.open('db/tokens.db')
-    db[ucode(token)] = True
-    db.close()
+    with TokenDB() as db:
+        db[ucode(token)] = True
 
 def delete_token(token):
-    db = shelve.open('db/tokens.db')
-    if ucode(token) in db:
-        del db[ucode(token)]
-    db.close()    
+    with TokenDB() as db:
+        if ucode(token) in db:
+            del db[ucode(token)]
 
 def verify_auth_token(token):
     s = Serializer(app.config['SECRET_KEY'])
@@ -131,7 +147,6 @@ parser.add_argument('password',
     type=unicode, 
     location=["json", "values"], 
     required=True)
-
 
 
 class Token(Resource):
