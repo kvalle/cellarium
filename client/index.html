@@ -35,7 +35,7 @@
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                            <ul class="nav navbar-nav navbar-right">
+                            <ul ng-show="isLoggedIn()" class="nav navbar-nav navbar-right">
                                 <li ng-class="{active: isOnPage('')}"><a href="#/">
                                     <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
                                     Beers

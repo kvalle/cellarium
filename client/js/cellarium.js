@@ -114,6 +114,13 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip'])
             };
         }])
 
+    .run(['$rootScope', 'authentication',
+        function($rootScope, authentication) {
+            $rootScope.isLoggedIn = function () {
+                return !!authentication.getUserInfo();
+            };
+        }])
+
     .run(["$rootScope", "$location",
         function ($rootScope, $location) {
 
