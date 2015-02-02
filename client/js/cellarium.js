@@ -2,16 +2,15 @@ angular.module('cellariumApp', ['ngRoute'])
 
     .config(['$routeProvider', 
         function($routeProvider) {
-            var authResolver = 
-                ['$q', 'authenticationSvc', function ($q, authenticationSvc) {
+            var authResolver = ['$q', 'authenticationSvc', 
+                function ($q, authenticationSvc) {
                     var userInfo = authenticationSvc.getUserInfo();
                     if (userInfo) {
                         return $q.when(userInfo);
                     } else {
-                        console.log("RESOLVING /: No userInfo found: ", userInfo)
                         return $q.reject({ authenticated: false });
                     }
-                }]
+                }];
 
             $routeProvider
                 .when('/', {
