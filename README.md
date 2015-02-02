@@ -22,6 +22,3 @@ Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
 		passlib
 		flask-restful (dev,	http://flask-restful.readthedocs.org/en/latest/installation.html)
-
-- remove menu when not logged in
-- clean up rootscope

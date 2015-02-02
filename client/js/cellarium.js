@@ -106,21 +106,6 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip'])
             };
         }])
 
-    .run(['$rootScope', '$location', 'flash',
-        function($rootScope, $location, flash) {
-            $rootScope.isOnPage = function (page) {
-                var currentRoute = $location.path().substring(1);
-                return page === currentRoute;
-            };
-        }])
-
-    .run(['$rootScope', 'authentication',
-        function($rootScope, authentication) {
-            $rootScope.isLoggedIn = function () {
-                return !!authentication.getUserInfo();
-            };
-        }])
-
     .run(["$rootScope", "$location",
         function ($rootScope, $location) {
 
@@ -369,5 +354,17 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip'])
                 beerApi.saveBeer(beer, function() {
                     $location.path('/');
                 });
+            };
+        }])
+
+    .controller('CellariumController', ['$scope', '$location', 'authentication',
+        function($scope, $location, authentication) {
+            $scope.isLoggedIn = function () {
+                return !!authentication.getUserInfo();
+            };
+
+            $scope.isOnPage = function (page) {
+                var currentRoute = $location.path().substring(1);
+                return page === currentRoute;
             };
         }]);
