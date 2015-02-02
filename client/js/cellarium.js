@@ -1,4 +1,4 @@
-angular.module('cellariumApp', ['ngRoute'])
+angular.module('cellariumApp', ['ngRoute', 'tooltip'])
 
     .config(['$routeProvider', 
         function($routeProvider) {
@@ -214,16 +214,6 @@ angular.module('cellariumApp', ['ngRoute'])
             $scope.message = flash.message;
             $scope.clear = flash.clear;
         }])
-
-    .directive('tooltip', 
-        function(){
-            return {
-                restrict: 'A',
-                link: function(scope, element, attrs){
-                    $(element).tooltip();
-                }
-            };
-        })
 
     .factory('beerDefaults', 
         function() {
