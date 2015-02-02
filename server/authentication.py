@@ -2,6 +2,8 @@
 
 import shelve
 import flask
+import re
+
 from flask.ext.restful import reqparse, Resource
 from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -79,8 +81,8 @@ def verify_password(username, password):
     return user and pwd_context.verify(password, user["password_hash"])
 
 def is_legal_username(username):
-    # TODO
-    return True
+    return re.match('^[\w_]+$', username)
+    
 
 ## Tokens
 
