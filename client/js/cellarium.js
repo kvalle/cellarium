@@ -115,7 +115,7 @@ angular.module('cellariumApp', ['ngRoute'])
             };
         }])
 
-    .run(["$rootScope", "$location", 
+    .run(["$rootScope", "$location",
         function ($rootScope, $location) {
 
             $rootScope.$on("$routeChangeSuccess", function (userInfo) {
@@ -124,8 +124,6 @@ angular.module('cellariumApp', ['ngRoute'])
 
             $rootScope.$on("$routeChangeError", function (event, current, previous, eventObj) {
                 if (eventObj.authenticated === false) {
-                    // TODO: strip any flash messages
-                    // TODO: add flash: "you need to log in"
                     $location.path("/login");
                 }
             });
