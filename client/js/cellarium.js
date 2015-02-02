@@ -2,31 +2,38 @@ angular.module('cellariumApp', ['ngRoute'])
 
     .config(['$routeProvider', 
         function($routeProvider) {
+            var authResolver = 
+                ['$q', 'authenticationSvc', function ($q, authenticationSvc) {
+                    var userInfo = authenticationSvc.getUserInfo();
+                    if (userInfo) {
+                        return $q.when(userInfo);
+                    } else {
+                        console.log("RESOLVING /: No userInfo found: ", userInfo)
+                        return $q.reject({ authenticated: false });
+                    }
+                }]
+
             $routeProvider
                 .when('/', {
                     controller: 'ListController',
                     templateUrl: 'templates/list.html',
                     resolve: {
-                        auth: ['$q', 'authenticationSvc', function ($q, authenticationSvc) {
-                            var userInfo = authenticationSvc.getUserInfo();
-                            if (userInfo) {
-                                return $q.when(userInfo);
-                            } else {
-                                console.log("RESOLVING /: No userInfo found: ", userInfo)
-                                return $q.reject({ authenticated: false });
-                            }
-                        }]
+                        auth: authResolver
                     }
                 })
                 .when('/edit/:beerId', {
                     controller: 'DetailsController',
-                    templateUrl: 'templates/detail.html'
-                    // TODO: add auth
+                    templateUrl: 'templates/detail.html',
+                    resolve: {
+                        auth: authResolver
+                    }
                 })
                 .when('/new', {
                     controller: 'DetailsController',
-                    templateUrl: 'templates/detail.html'
-                    // TODO: add auth
+                    templateUrl: 'templates/detail.html',
+                    resolve: {
+                        auth: authResolver
+                    }
                 })
                 .when('/login', {
                     controller: 'LoginController',
