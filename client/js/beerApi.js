@@ -1,4 +1,4 @@
-angular.module('beerApiModule', [])
+angular.module('beerApiModule', ['flash'])
 
     .factory('beerDefaults', 
         function() {

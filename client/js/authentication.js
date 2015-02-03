@@ -1,4 +1,4 @@
-angular.module('authentication', [])
+angular.module('authentication', ['flash'])
 
     .controller("LogoutController", ["$location", "authentication",
         function ($location, authentication) {
