@@ -1,6 +1,6 @@
-angular.module('authentication', ['flash'])
+angular.module('cellarium.auth', ['cellarium.flash'])
 
-    .controller("LogoutController", ["$location", "authentication",
+    .controller("LogoutCtrl", ["$location", "authentication",
         function ($location, authentication) {
             authentication.logout()
                 .then(function(result) {
@@ -11,7 +11,7 @@ angular.module('authentication', ['flash'])
                 });
         }])
 
-    .controller("LoginController", ["$scope", "$location", "$window", "authentication", "flash",
+    .controller("LoginCtrl", ["$scope", "$location", "$window", "authentication", "flash",
         function ($scope, $location, $window, authentication, flash) {
             $scope.userInfo = null;
 

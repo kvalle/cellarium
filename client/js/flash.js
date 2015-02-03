@@ -1,4 +1,4 @@
-angular.module('flash', [])
+angular.module('cellarium.flash', [])
 
     .factory('flash', ['$rootScope',
         function($rootScope) {
@@ -27,7 +27,7 @@ angular.module('flash', [])
             };
         }])
 
-    .controller('FlashController', ['$scope', 'flash',
+    .controller('FlashCtrl', ['$scope', 'flash',
         function($scope, flash) {
             $scope.message = flash.message;
             $scope.clear = flash.clear;

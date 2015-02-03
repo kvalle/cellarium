@@ -1,4 +1,9 @@
-angular.module('cellariumApp', ['ngRoute', 'tooltip', 'beerApiModule', 'authentication', 'flash'])
+angular.module('cellarium', 
+    ['ngRoute', 
+     'cellarium.tooltip', 
+     'cellarium.api', 
+     'cellarium.auth', 
+     'cellarium.flash'])
 
     .config(['$routeProvider', 
         function($routeProvider) {
@@ -14,32 +19,32 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip', 'beerApiModule', 'authenti
 
             $routeProvider
                 .when('/', {
-                    controller: 'ListController',
+                    controller: 'ListCtrl',
                     templateUrl: 'templates/list.html',
                     resolve: {
                         auth: authResolver
                     }
                 })
                 .when('/edit/:beerId', {
-                    controller: 'DetailsController',
+                    controller: 'DetailsCtrl',
                     templateUrl: 'templates/detail.html',
                     resolve: {
                         auth: authResolver
                     }
                 })
                 .when('/new', {
-                    controller: 'DetailsController',
+                    controller: 'DetailsCtrl',
                     templateUrl: 'templates/detail.html',
                     resolve: {
                         auth: authResolver
                     }
                 })
                 .when('/login', {
-                    controller: 'LoginController',
+                    controller: 'LoginCtrl',
                     templateUrl: 'templates/login.html'
                 })
                 .when('/logout', {
-                    controller: 'LogoutController',
+                    controller: 'LogoutCtrl',
                     template: ''
                 })
                 .otherwise({
@@ -47,7 +52,7 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip', 'beerApiModule', 'authenti
                 });
         }])
 
-    .controller('ListController', ['$scope', 'beerApi', 'flash', 'beerDefaults', '$timeout', 
+    .controller('ListCtrl', ['$scope', 'beerApi', 'flash', 'beerDefaults', '$timeout', 
         function($scope, beerApi, flash, beerDefaults, $timeout) {
             $scope.defaults = beerDefaults;
             $scope.beer = {};
@@ -79,7 +84,7 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip', 'beerApiModule', 'authenti
             updateBeerList();
         }])
 
-    .controller('DetailsController', ['$scope', '$location', '$routeParams', 'beerApi', 'beerDefaults', 'flash', 
+    .controller('DetailsCtrl', ['$scope', '$location', '$routeParams', 'beerApi', 'beerDefaults', 'flash', 
         function($scope, $location, $routeParams, beerApi, beerDefaults, flash) {
             $scope.defaults = beerDefaults;
 
@@ -104,7 +109,7 @@ angular.module('cellariumApp', ['ngRoute', 'tooltip', 'beerApiModule', 'authenti
             };
         }])
 
-    .controller('CellariumController', ['$scope', '$location', 'authentication',
+    .controller('CellariumCtrl', ['$scope', '$location', 'authentication',
         function($scope, $location, authentication) {
             $scope.isLoggedIn = function () {
                 return !!authentication.getUserInfo();

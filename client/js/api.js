@@ -1,4 +1,4 @@
-angular.module('beerApiModule', ['flash'])
+angular.module('cellarium.api', ['cellarium.flash'])
 
     .factory('beerDefaults', 
         function() {
@@ -34,8 +34,8 @@ angular.module('beerApiModule', ['flash'])
             var getBeers = function (fn) {
                 $http.get(urlFor()).success(fn)
                     .error(function(data, status, headers, config) {
-                        console.error(status, data);
                         flash.error("Unable to retrieve list of beers");
+                        console.error(status, data);
                     });
             };
 

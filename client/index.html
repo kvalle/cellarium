@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="cellariumApp">
+<html lang="en" ng-app="cellarium">
 <head>
     <title>Cellārium</title>
     <meta charset="UTF-8" />
@@ -19,7 +19,7 @@
 
 </head>
 <body>
-    <div class="container" ng-controller="CellariumController">
+    <div class="container" ng-controller="CellariumCtrl">
         <nav class="navbar navbar-default" role="navigation">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
@@ -53,7 +53,7 @@
             </div><!-- /.container-fluid -->
         </nav>
 
-        <div ng-controller="FlashController">
+        <div ng-controller="FlashCtrl">
             <div ng-show="message.text" class="alert alert-{{message.type}} alert-dismissible" role="alert">
                 <button type="button" class="close" ng-click="clear()" data-dismiss="alert">
                     <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
@@ -67,10 +67,10 @@
     </div>
 
     <script src="/js/flash.js"></script>
-    <script src="/js/authentication.js"></script>
-    <script src="/js/beerApi.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/api.js"></script>
     <script src="/js/tooltip.js"></script>
-    <script src="/js/cellarium.js"></script>
+    <script src="/js/app.js"></script>
 
 </body>
 </html>
