@@ -1,4 +1,4 @@
-angular.module('cellarium.flash', [])
+angular.module('flash', [])
 
     .factory('flash', ['$rootScope',
         function($rootScope) {

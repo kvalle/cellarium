@@ -1,4 +1,4 @@
-angular.module('cellarium.tooltip', [])
+angular.module('tooltip', [])
 
     .directive('tooltip', function () {
         return {

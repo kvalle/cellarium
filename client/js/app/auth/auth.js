@@ -1,4 +1,4 @@
-angular.module('cellarium.auth', ['cellarium.flash'])
+angular.module('auth', ['flash'])
 
     .controller("LogoutCtrl", ["$location", "authentication",
         function ($location, authentication) {

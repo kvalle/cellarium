@@ -1,4 +1,4 @@
-angular.module('cellarium.api', ['cellarium.flash'])
+angular.module('api', ['flash'])
 
     .factory('beerDefaults', 
         function() {
