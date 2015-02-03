@@ -1,5 +1,10 @@
 angular.module('cellariumApp', ['ngRoute', 'cellarium', 'tooltip', 'api', 'auth', 'flash'])
 
+    .config(['$compileProvider',
+        function($compileProvider) {
+            $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|blob):/);
+        }])
+
     .config(['$routeProvider', 
         function($routeProvider) {
             var authResolver = ['$q', 'authentication', 
@@ -30,6 +35,13 @@ angular.module('cellariumApp', ['ngRoute', 'cellarium', 'tooltip', 'api', 'auth'
                 .when('/new', {
                     controller: 'DetailsCtrl',
                     templateUrl: 'js/app/cellarium/detail.html',
+                    resolve: {
+                        auth: authResolver
+                    }
+                })
+                .when('/settings', {
+                    controller: 'SettingsCtrl',
+                    templateUrl: 'js/app/cellarium/settings.html',
                     resolve: {
                         auth: authResolver
                     }

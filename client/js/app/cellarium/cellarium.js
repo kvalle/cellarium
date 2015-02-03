@@ -1,5 +1,33 @@
 angular.module('cellarium', ['api', 'auth', 'flash'])
 
+    .controller('CellariumCtrl', ['$scope', '$location', 'authentication', 'beerApi',
+        function($scope, $location, authentication, beerApi) {
+            $scope.isLoggedIn = function () {
+                return !!authentication.getUserInfo();
+            };
+
+            $scope.isOnPage = function (page) {
+                var currentRoute = $location.path().substring(1);
+                return page === currentRoute;
+            };
+
+            $scope.username = authentication.getUserInfo().username;
+        }])
+
+    .controller('SettingsCtrl', ['$scope', 'authentication', 'beerApi',
+        function($scope, authentication, beerApi) {
+            var username = authentication.getUserInfo().username;
+            $scope.exportName = "beers-" + username + ".json";
+            $scope.exportUrl = "";
+
+            beerApi.getBeers(function(data) {
+                var beerList = _.values(data);
+                var content = JSON.stringify(beerList, null, '\t');
+                var blob = new Blob([ content ], { type : 'text/plain' });
+                $scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+            });
+        }])
+
     .controller('ListCtrl', ['$scope', 'beerApi', 'flash', 'beerDefaults', '$timeout', 
         function($scope, beerApi, flash, beerDefaults, $timeout) {
             $scope.defaults = beerDefaults;
@@ -54,17 +82,5 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
                 beerApi.saveBeer(beer, function() {
                     $location.path('/');
                 });
-            };
-        }])
-
-    .controller('CellariumCtrl', ['$scope', '$location', 'authentication',
-        function($scope, $location, authentication) {
-            $scope.isLoggedIn = function () {
-                return !!authentication.getUserInfo();
-            };
-
-            $scope.isOnPage = function (page) {
-                var currentRoute = $location.path().substring(1);
-                return page === currentRoute;
             };
         }]);

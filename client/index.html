@@ -44,6 +44,11 @@
                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                             Add beer
                         </a></li>
+                        <li ng-class="{active: isOnPage('settings')}"><a href="#/settings">
+                           <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                           <span ng-bind="username" />
+                        </a></li>
+                        </a></li>
                         <li><a href="#/logout">
                             <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
                             Log out
