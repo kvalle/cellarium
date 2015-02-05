@@ -14,14 +14,8 @@ No.
 
 Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
-- export beers as JSON
 - contextual-classes for showing changes: http://getbootstrap.com/css/#tables-contextual-classes
 - bug: flash messages don't work after one have been dismissed
 - HTTPS 
-- document requirements
-
-		passlib
-		flask-restful (dev,	http://flask-restful.readthedocs.org/en/latest/installation.html)
-
 - clean up naming within modules
 - clean up dependencies on flash service
