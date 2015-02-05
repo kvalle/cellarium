@@ -45,7 +45,7 @@ class Beer(Resource):
         return '', 204
 
     @auth.requires_auth
-    def put(self, user, beer_id):
+    def put(self, beer_id):
         user = flask.g.user["username"]
         beer = repo.update_beer(user, beer_id, parser.parse_args())
         return beer, 201
