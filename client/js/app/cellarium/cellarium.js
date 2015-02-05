@@ -11,7 +11,10 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
                 return page === currentRoute;
             };
 
-            $scope.username = authentication.getUserInfo().username;
+            var user = authentication.getUserInfo();
+            if (user) {
+                $scope.username = user.username;
+            }
         }])
 
     .controller('SettingsCtrl', ['$scope', 'authentication', 'beerApi',
