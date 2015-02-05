@@ -10,18 +10,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "shell", inline: <<-SCRIPT
     sudo apt-get install python-pip -y
-    sudo pip install PyYAML
     sudo apt-get install git -y
+    sudo pip install PyYAML
     git clone https://github.com/kvalle/dotfiles.git
 
-    # sudo pip install Flask
-
-    git clone https://github.com/twilio/flask-restful.git
-	  # cd flask-restful
-	  # sudo python setup.py develop
+    ## sudo pip install Flask
+    #git clone https://github.com/twilio/flask-restful.git
+	  #cd flask-restful
+	  #sudo python setup.py develop
 SCRIPT
 
   config.vm.network "forwarded_port", guest: 4321, host: 4321 # backend
-  config.vm.network "forwarded_port", guest: 8000, host: 8000 # frontend
   config.vm.synced_folder "", "/home/vagrant/cellarium"
 end
