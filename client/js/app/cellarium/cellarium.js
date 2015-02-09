@@ -35,13 +35,22 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
         function($scope, beerApi, flash, beerDefaults, $timeout) {
             $scope.defaults = beerDefaults;
             $scope.beer = {};
+            $scope.newBeerRow = {visible: false};
+            $scope.beers = [];
             
             var updateBeerList = function() {
                 beerApi.getBeers(function(data) {
                     $scope.beers = data;
                 });
             }
-    
+            
+            $scope.showNewBeerRow = function() {
+                $scope.newBeerRow.visible = !$scope.newBeerRow.true;
+                $timeout(function() {
+                    angular.element('#newBeerCount').focus();
+                });
+            }
+
             $scope.destroy = function(beer) {
                 beerApi.deleteBeer(beer, function() {
                     updateBeerList();
@@ -56,7 +65,8 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
                     $scope.beer = {};
                     $timeout(function() {
                         angular.element('#newBeerCount').focus();
-                    }); 
+                    });
+                    $scope.newBeerRow.visible = true;
                 });
             };
     
