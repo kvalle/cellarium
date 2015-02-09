@@ -14,8 +14,12 @@ No.
 
 Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
-- contextual-classes for showing changes: http://getbootstrap.com/css/#tables-contextual-classes
+- keep login session alive when using the app
+- change password on settings page
+- serve as HTTPS 
+- toggle visibility of "new beer" row 
+- auto-suggest beers from untappd/ratebeer
 - bug: flash messages don't work after one have been dismissed
-- HTTPS 
 - clean up naming within modules
 - clean up dependencies on flash service
+- contextual-classes for showing changes: http://getbootstrap.com/css/#tables-contextual-classes
