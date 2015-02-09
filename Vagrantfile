@@ -20,6 +20,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	  #sudo python setup.py develop
 SCRIPT
 
-  config.vm.network "forwarded_port", guest: 4321, host: 4321 # backend
+  config.vm.network "forwarded_port", guest: 1337, host: 1337
   config.vm.synced_folder "", "/home/vagrant/cellarium"
 end
