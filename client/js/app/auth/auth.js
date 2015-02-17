@@ -17,8 +17,8 @@ angular.module('auth', ['flash'])
             $httpProvider.interceptors.push('authHttpResponseInterceptor');
         }])
 
-    .factory('authHttpResponseInterceptor',['$q','$location', '$injector',
-        function($q, $location, $injector) {
+    .factory('authHttpResponseInterceptor',['$q','$location', '$injector', '$rootScope',
+        function($q, $location, $injector, $rootScope) {
             return {
                 request: function(config) {
                     var authentication = $injector.get('authentication');
@@ -34,8 +34,7 @@ angular.module('auth', ['flash'])
                 },
                 responseError: function(rejection) {
                     if (rejection.status === 401) {
-                        console.log("CAUGHT 401 RESPONSE: ", rejection);
-                        $location.path('/login');
+                        $rootScope.$broadcast("auth:unauthorized");
                     }
                     return $q.reject(rejection);
                 }
@@ -74,8 +73,12 @@ angular.module('auth', ['flash'])
                     $rootScope.$broadcast('auth:login', {userInfo: userInfo});
                     console.log("LOGIN SUCCESS: ", userInfo);
                 }, function (error) {
-                    flash.error("Bad username or password");
-                    console.log("LOGIN FAILED: ", error);
+                    if (error.status === 401) {
+                        flash.error("Login failed: bad username or password");
+                        console.log("LOGIN FAILED: ", error);
+                    } else {
+                        throw error;
+                    }
                 });
             }
 
@@ -108,10 +111,13 @@ angular.module('auth', ['flash'])
             }
             init();
 
+            $rootScope.$on("auth:unauthorized", function () {
+                clearUserInfo();
+            });
+
             return {
                 login: login,
                 logout: logout,
-                getUserInfo: getUserInfo,
-                clearUserInfo: clearUserInfo
+                getUserInfo: getUserInfo
             };
         }]);
