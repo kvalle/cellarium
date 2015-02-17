@@ -22,8 +22,14 @@ No.
 
 Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
-- keep login session alive when using the app
-- change password on settings page
+- fix handling of userInfo in auth module
+- purge userInfo when acces token has expired (401 on request)
+- fix error message when
+- fix error message in login form when
+- refresh access token TTL when used
+- logout user when inactive for too long
+
+- add 'change password' form on settings page
 - list ordering: https://docs.angularjs.org/api/ng/filter/orderBy
 - serve as HTTPS 
 - auto-suggest beers from untappd/ratebeer
