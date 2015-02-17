@@ -2,19 +2,8 @@ angular.module('auth', ['flash'])
 
     .controller("LoginCtrl", ["$scope", "$location", "authentication", "flash",
         function ($scope, $location, authentication, flash) {
-            $scope.userInfo = null;
-
             $scope.login = function () {
-                authentication.login($scope.username, $scope.password)
-                    .then(function (result) {
-                        $scope.userInfo = result;
-                        console.log("LOGIN SUCCESS: ", $scope.userInfo)
-                        flash.clear()
-                        $location.path("/");
-                    }, function (error) {
-                        flash.error("Bad username or password");
-                        console.log("LOGIN FAILED: ", error);
-                    });
+                authentication.login($scope.username, $scope.password);
             };
         }])
 
@@ -67,23 +56,22 @@ angular.module('auth', ['flash'])
             });
         }])
 
-    .factory("authentication", ["$http", "$q", "$window", "$timeout", "$location",
-        function ($http, $q, $window, $timeout, $location) {
+    .factory("authentication", ["$http", "$q", "$window", "$timeout", "$location", 'flash',
+        function ($http, $q, $window, $timeout, $location, flash) {
             var userInfo;
 
             function login(username, password) {
-                var deferred = $q.defer();
-
                 $http.post("/api/auth/token", { username: username, password: password })
                     .then(function (result) {
                         userInfo = result.data;
                         $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
-                        deferred.resolve(userInfo);
+                        console.log("LOGIN SUCCESS: ", userInfo)
+                        flash.clear()
+                        $location.path("/");
                     }, function (error) {
-                        deferred.reject(error);
+                        flash.error("Bad username or password");
+                        console.log("LOGIN FAILED: ", error);
                     });
-
-                return deferred.promise;
             }
 
             function logout() {

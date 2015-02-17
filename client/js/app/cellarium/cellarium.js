@@ -1,7 +1,9 @@
 angular.module('cellarium', ['api', 'auth', 'flash'])
 
-    .controller('CellariumCtrl', ['$scope', '$location', 'authentication', 'beerApi',
-        function($scope, $location, authentication, beerApi) {
+    .controller('CellariumCtrl', ['$scope', '$location', 'authentication', 'beerApi', '$rootScope',
+        function($scope, $location, authentication, beerApi, $rootScope) {
+            $scope.user = {};
+
             $scope.isLoggedIn = function () {
                 return !!authentication.getUserInfo();
             };
@@ -13,7 +15,7 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
 
             var user = authentication.getUserInfo();
             if (user) {
-                $scope.username = user.username;
+                $scope.user.username = user.username;
             }
         }])
 
