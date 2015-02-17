@@ -84,8 +84,7 @@ angular.module('auth', ['flash'])
                     method: "DELETE",
                     url: "/api/auth/token"
                 }).then(function (result) {
-                    userInfo = null;
-                    $window.sessionStorage["userInfo"] = null;
+                    clearUserInfo();
                     $rootScope.$broadcast('auth:logout');
                     console.log("LOGGED OUT");
                 }, function (error) {
@@ -95,6 +94,11 @@ angular.module('auth', ['flash'])
 
             function getUserInfo() {
                 return userInfo;
+            }
+
+            function clearUserInfo() {
+                userInfo = null;
+                $window.sessionStorage["userInfo"] = null;
             }
 
             function init() {
@@ -107,6 +111,7 @@ angular.module('auth', ['flash'])
             return {
                 login: login,
                 logout: logout,
-                getUserInfo: getUserInfo
+                getUserInfo: getUserInfo,
+                clearUserInfo: clearUserInfo
             };
         }]);
