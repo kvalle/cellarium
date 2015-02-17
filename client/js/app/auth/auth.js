@@ -77,7 +77,6 @@ angular.module('auth', ['flash'])
                 $http.post("/api/auth/token", { username: username, password: password })
                     .then(function (result) {
                         userInfo = result.data;
-                        userinfo.sessionStart = new Date();
                         $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
                         deferred.resolve(userInfo);
                     }, function (error) {
