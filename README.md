@@ -22,8 +22,6 @@ No.
 
 Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
-- bug: search/filter is not working
-- styling-bug: horzonal scrollbar on list view
 - keep login session alive when using the app
 - change password on settings page
 - list ordering: https://docs.angularjs.org/api/ng/filter/orderBy

@@ -40,7 +40,11 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
             
             var updateBeerList = function() {
                 beerApi.getBeers(function(data) {
-                    $scope.beers = data;
+                    // There must be a better way to do this without changing the reference?
+                    $scope.beers.length = 0;
+                    for (beer in data) {
+                        $scope.beers.push(data[beer]);
+                    }
                 });
             }
             

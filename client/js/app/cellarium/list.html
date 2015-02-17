@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <form>
             <div class="form-group">
-                <input type="search" class="form-control" ng-model="search" placeholder="Filter beers">
+                <input type="search" class="form-control" ng-model="beerFilter" placeholder="Filter beers">
             </div>
         </form>
     </div>
@@ -24,7 +24,7 @@
                     </thead>
                     <tbody>
                         
-                        <tr ng-repeat="beer in beers | filter:search | orderBy:'brewery'">
+                        <tr ng-repeat="beer in beers | filter:beerFilter">
                             <td>
                                 <span class="pull-right badge alert-info" ng-bind="beer.count" />
                             </td>
