@@ -63,17 +63,20 @@ angular.module('auth', ['flash'])
             var userInfo;
 
             function login(username, password) {
-                $http.post("/api/auth/token", { username: username, password: password })
-                    .then(function (result) {
-                        userInfo = result.data;
-                        $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
-                        flash.clear();
-                        $rootScope.$broadcast('auth:login', {userInfo: userInfo});
-                        console.log("LOGIN SUCCESS: ", userInfo);
-                    }, function (error) {
-                        flash.error("Bad username or password");
-                        console.log("LOGIN FAILED: ", error);
-                    });
+                $http({
+                    method: "POST",
+                    url: "/api/auth/token",
+                    data: { username: username, password: password }
+                }).then(function (result) {
+                    userInfo = result.data;
+                    $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
+                    flash.clear();
+                    $rootScope.$broadcast('auth:login', {userInfo: userInfo});
+                    console.log("LOGIN SUCCESS: ", userInfo);
+                }, function (error) {
+                    flash.error("Bad username or password");
+                    console.log("LOGIN FAILED: ", error);
+                });
             }
 
             function logout() {
