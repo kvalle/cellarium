@@ -22,7 +22,6 @@ No.
 
 Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
-- fix handling of userInfo in auth module
 - purge userInfo when acces token has expired (401 on request)
 - fix error message when
 - fix error message in login form when

@@ -45,19 +45,23 @@ angular.module('auth', ['flash'])
     .run(["$rootScope", "$location",
         function ($rootScope, $location) {
 
-            $rootScope.$on("$routeChangeSuccess", function (userInfo) {
-                console.log(userInfo);
-            });
-
             $rootScope.$on("$routeChangeError", function (event, current, previous, eventObj) {
                 if (eventObj.authenticated === false) {
                     $location.path("/login");
                 }
             });
+
+            $rootScope.$on("auth:login", function (event, current, previous, eventObj) {
+                $location.path("/");
+            });
+
+            $rootScope.$on("auth:logout", function (event, current, previous, eventObj) {
+                $location.path("/login");
+            });
         }])
 
-    .factory("authentication", ["$http", "$q", "$window", "$timeout", "$location", 'flash',
-        function ($http, $q, $window, $timeout, $location, flash) {
+    .factory("authentication", ["$http", "$q", "$window", "$timeout", 'flash', '$rootScope',
+        function ($http, $q, $window, $timeout, flash, $rootScope) {
             var userInfo;
 
             function login(username, password) {
@@ -65,9 +69,9 @@ angular.module('auth', ['flash'])
                     .then(function (result) {
                         userInfo = result.data;
                         $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
-                        console.log("LOGIN SUCCESS: ", userInfo)
-                        flash.clear()
-                        $location.path("/");
+                        flash.clear();
+                        $rootScope.$broadcast('auth:login', {userInfo: userInfo});
+                        console.log("LOGIN SUCCESS: ", userInfo);
                     }, function (error) {
                         flash.error("Bad username or password");
                         console.log("LOGIN FAILED: ", error);
@@ -81,8 +85,8 @@ angular.module('auth', ['flash'])
                 }).then(function (result) {
                     userInfo = null;
                     $window.sessionStorage["userInfo"] = null;
+                    $rootScope.$broadcast('auth:logout');
                     console.log("LOGGED OUT");
-                    $location.path('/login');     
                 }, function (error) {
                     console.error("NOT LOGGED OUT: ", error);
                 });

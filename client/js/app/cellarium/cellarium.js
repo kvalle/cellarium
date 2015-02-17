@@ -13,10 +13,19 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
                 return page === currentRoute;
             };
 
-            var user = authentication.getUserInfo();
-            if (user) {
-                $scope.user.username = user.username;
+            $rootScope.$on("auth:login", function (event, data) {
+                $scope.user.username = data.userInfo.username;
+            });
+
+
+            function init() {
+                // In case user is already logged in when page refreshes
+                var user = authentication.getUserInfo();
+                if (user) {
+                    $scope.user.username = user.username;
+                }
             }
+            init();
         }])
 
     .controller('SettingsCtrl', ['$scope', 'authentication', 'beerApi',

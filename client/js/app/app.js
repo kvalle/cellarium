@@ -13,6 +13,7 @@ angular.module('cellariumApp', ['ngRoute', 'cellarium', 'tooltip', 'api', 'auth'
                     if (userInfo) {
                         return $q.when(userInfo);
                     } else {
+                        // User tried to access protected view without being authenticated
                         return $q.reject({ authenticated: false });
                     }
                 }];
