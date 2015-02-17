@@ -45,17 +45,15 @@ angular.module('auth', ['flash'])
     .run(["$rootScope", "$location",
         function ($rootScope, $location) {
 
-            $rootScope.$on("$routeChangeError", function (event, current, previous, eventObj) {
-                if (eventObj.authenticated === false) {
-                    $location.path("/login");
-                }
+            $rootScope.$on("auth:unauthorized", function () {
+                $location.path("/login");
             });
 
-            $rootScope.$on("auth:login", function (event, current, previous, eventObj) {
+            $rootScope.$on("auth:login", function () {
                 $location.path("/");
             });
 
-            $rootScope.$on("auth:logout", function (event, current, previous, eventObj) {
+            $rootScope.$on("auth:logout", function () {
                 $location.path("/login");
             });
         }])

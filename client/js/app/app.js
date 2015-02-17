@@ -7,13 +7,14 @@ angular.module('cellariumApp', ['ngRoute', 'cellarium', 'tooltip', 'api', 'auth'
 
     .config(['$routeProvider', 
         function($routeProvider) {
-            var authResolver = ['$q', 'authentication', 
-                function ($q, authentication) {
+            var authResolver = ['$q', 'authentication', '$rootScope',
+                function ($q, authentication, $rootScope) {
                     var userInfo = authentication.getUserInfo();
                     if (userInfo) {
                         return $q.when(userInfo);
                     } else {
                         // User tried to access protected view without being authenticated
+                        $rootScope.$broadcast('auth:unauthorized');
                         return $q.reject({ authenticated: false });
                     }
                 }];
