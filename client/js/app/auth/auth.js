@@ -1,18 +1,7 @@
 angular.module('auth', ['flash'])
 
-    .controller("LogoutCtrl", ["$location", "authentication",
-        function ($location, authentication) {
-            authentication.logout()
-                .then(function(result) {
-                    console.log("LOGGED OUT: ", result);
-                    $location.path('/login');             
-                }, function(error) {
-                    console.error("NOT LOGGED OUT: ", error);
-                });
-        }])
-
-    .controller("LoginCtrl", ["$scope", "$location", "$window", "authentication", "flash",
-        function ($scope, $location, $window, authentication, flash) {
+    .controller("LoginCtrl", ["$scope", "$location", "authentication", "flash",
+        function ($scope, $location, authentication, flash) {
             $scope.userInfo = null;
 
             $scope.login = function () {
@@ -27,6 +16,11 @@ angular.module('auth', ['flash'])
                         console.log("LOGIN FAILED: ", error);
                     });
             };
+        }])
+
+    .controller("LogoutCtrl", ["$location", "authentication",
+        function ($location, authentication) {
+            authentication.logout();
         }])
 
     .config(['$httpProvider',
@@ -73,8 +67,8 @@ angular.module('auth', ['flash'])
             });
         }])
 
-    .factory("authentication", ["$http", "$q", "$window",
-        function ($http, $q, $window) {
+    .factory("authentication", ["$http", "$q", "$window", "$timeout", "$location",
+        function ($http, $q, $window, $timeout, $location) {
             var userInfo;
 
             function login(username, password) {
@@ -83,6 +77,7 @@ angular.module('auth', ['flash'])
                 $http.post("/api/auth/token", { username: username, password: password })
                     .then(function (result) {
                         userInfo = result.data;
+                        userinfo.sessionStart = new Date();
                         $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
                         deferred.resolve(userInfo);
                     }, function (error) {
@@ -93,20 +88,17 @@ angular.module('auth', ['flash'])
             }
 
             function logout() {
-                var deferred = $q.defer();
-
                 $http({
                     method: "DELETE",
                     url: "/api/auth/token"
                 }).then(function (result) {
                     userInfo = null;
                     $window.sessionStorage["userInfo"] = null;
-                    deferred.resolve(result);
+                    console.log("LOGGED OUT");
+                    $location.path('/login');     
                 }, function (error) {
-                    deferred.reject(error);
+                    console.error("NOT LOGGED OUT: ", error);
                 });
-
-                return deferred.promise;
             }
 
             function getUserInfo() {

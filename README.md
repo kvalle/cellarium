@@ -31,3 +31,4 @@ Running, incomplete, and probaby not up to date list of stuff that needs doing:
 - clean up naming within modules
 - clean up dependencies on flash service
 - contextual-classes for showing changes: http://getbootstrap.com/css/#tables-contextual-classes
+- logging js-errors to server; http://engineering.talis.com/articles/client-side-error-logging/
