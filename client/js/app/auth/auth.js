@@ -1,14 +1,14 @@
 angular.module('auth', ['flash'])
 
-    .controller("LoginCtrl", ["$scope", "$location", "authentication", "flash",
-        function ($scope, $location, authentication, flash) {
+    .controller("LoginCtrl", ["$scope", "authentication",
+        function ($scope, authentication) {
             $scope.login = function () {
                 authentication.login($scope.username, $scope.password);
             };
         }])
 
-    .controller("LogoutCtrl", ["$location", "authentication",
-        function ($location, authentication) {
+    .controller("LogoutCtrl", ["authentication",
+        function (authentication) {
             authentication.logout();
         }])
 
@@ -60,8 +60,8 @@ angular.module('auth', ['flash'])
             });
         }])
 
-    .factory("authentication", ["$http", "$q", "$window", "$timeout", 'flash', '$rootScope',
-        function ($http, $q, $window, $timeout, flash, $rootScope) {
+    .factory("authentication", ["$http", "$q", "$window", 'flash', '$rootScope',
+        function ($http, $q, $window, flash, $rootScope) {
             var userInfo;
 
             function login(username, password) {
