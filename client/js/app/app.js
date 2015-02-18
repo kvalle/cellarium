@@ -1,4 +1,4 @@
-angular.module('cellariumApp', ['ngRoute', 'cellarium', 'tooltip', 'api', 'auth', 'flash'])
+angular.module('cellariumApp', ['config', 'ngRoute', 'cellarium', 'tooltip', 'api', 'auth', 'flash'])
 
     .config(['$compileProvider',
         function($compileProvider) {

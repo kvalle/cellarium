@@ -62,8 +62,8 @@ angular.module('auth', ['flash'])
             });
         }])
 
-    .factory("authentication", ["$http", "$q", "$window", 'flash', '$rootScope', '$timeout',
-        function ($http, $q, $window, flash, $rootScope, $timeout) {
+    .factory("authentication", ["$http", "$q", "$window", 'flash', '$rootScope', '$timeout', 'config',
+        function ($http, $q, $window, flash, $rootScope, $timeout, config) {
             var userInfo;
             var lastActivity;
 
@@ -105,8 +105,7 @@ angular.module('auth', ['flash'])
             function trackSession() {
                 $timeout(function () {
                     var tokenAge = new Date() - lastActivity;
-                    if (tokenAge > 60000) {
-                        console.log("logout!");
+                    if (tokenAge > config.accessTokenTTL) {
                         logout();
                     } else {
                         console.log(tokenAge);
