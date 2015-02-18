@@ -31,6 +31,10 @@ angular.module('auth', ['flash'])
                     return config || $q.when(config);
                 },
                 response: function(response){
+                    if (response.headers('X-Access-Token-Renewed')) {
+                        var authentication = $injector.get('authentication');
+                        authentication.registerActivity();
+                    }
                     return response || $q.when(response);
                 },
                 responseError: function(rejection) {
@@ -58,9 +62,10 @@ angular.module('auth', ['flash'])
             });
         }])
 
-    .factory("authentication", ["$http", "$q", "$window", 'flash', '$rootScope',
-        function ($http, $q, $window, flash, $rootScope) {
+    .factory("authentication", ["$http", "$q", "$window", 'flash', '$rootScope', '$timeout',
+        function ($http, $q, $window, flash, $rootScope, $timeout) {
             var userInfo;
+            var lastActivity;
 
             function login(username, password) {
                 $http({
@@ -72,6 +77,7 @@ angular.module('auth', ['flash'])
                     $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
                     flash.clear();
                     $rootScope.$broadcast('auth:login', {userInfo: userInfo});
+                    trackSession();
                     console.log("LOGIN SUCCESS: ", userInfo);
                 }, function (error) {
                     if (error.status === 401) {
@@ -96,6 +102,19 @@ angular.module('auth', ['flash'])
                 });
             }
 
+            function trackSession() {
+                $timeout(function () {
+                    var tokenAge = new Date() - lastActivity;
+                    if (tokenAge > 60000) {
+                        console.log("logout!");
+                        logout();
+                    } else {
+                        console.log(tokenAge);
+                        trackSession();
+                    }
+                }, 1000)
+            }
+
             function getUserInfo() {
                 return userInfo;
             }
@@ -105,9 +124,15 @@ angular.module('auth', ['flash'])
                 $window.sessionStorage["userInfo"] = null;
             }
 
+            function registerActivity() {
+                lastActivity = new Date();
+            }
+
             function init() {
-                if ($window.sessionStorage["userInfo"]) {
-                    userInfo = JSON.parse($window.sessionStorage["userInfo"]);
+                userInfo = JSON.parse($window.sessionStorage["userInfo"]);
+                if (userInfo) {
+                    registerActivity();
+                    trackSession();
                 }
             }
             init();
@@ -119,6 +144,7 @@ angular.module('auth', ['flash'])
             return {
                 login: login,
                 logout: logout,
-                getUserInfo: getUserInfo
+                getUserInfo: getUserInfo,
+                registerActivity: registerActivity
             };
         }]);
