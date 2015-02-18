@@ -36,7 +36,7 @@ class Beer(Resource):
     @auth.requires_auth
     def get(self, beer_id):
         user = flask.g.user["username"]
-        return repo.get_beer(user, beer_id)
+        return repo.get_beer(user, beer_id), 200
 
     @auth.requires_auth
     def delete(self, beer_id):
@@ -55,7 +55,7 @@ class BeerList(Resource):
     @auth.requires_auth
     def get(self):
         user = flask.g.user["username"]
-        return repo.list_beers(user)
+        return repo.list_beers(user), 200
 
     @auth.requires_auth
     def post(self):
