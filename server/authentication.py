@@ -173,7 +173,7 @@ parser.add_argument('password',
     required=True)
 
 
-class Token(Resource):
+class CreateToken(Resource):
 
     def post(self):
         "Obtain acces token by providing username/password"
@@ -193,12 +193,12 @@ class Token(Resource):
             "username": username
         }, 200
 
-    @requires_auth
-    def delete(self):
-        "Delete current access token"
+class RevokeToken(Resource):
 
-        token = None
-        delete_token(flask.g.token)
+    def delete(self, token):
+        "Revoke access token"
+
+        delete_token(token)
         return '', 204
 
 class Users(Resource):
@@ -219,5 +219,6 @@ class Users(Resource):
         return {"username": user["username"]}, 201
 
 
-api.add_resource(Token, '/api/auth/token')
-api.add_resource(Users, '/api/auth/users')
+api.add_resource(Users,       '/api/auth/users')
+api.add_resource(CreateToken, '/api/auth/token')
+api.add_resource(RevokeToken, '/api/auth/token/<string:token>')

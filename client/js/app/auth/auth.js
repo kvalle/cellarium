@@ -64,8 +64,8 @@ angular.module('auth', ['flash'])
 
     .factory("authentication", ["$http", "$q", "$window", 'flash', '$rootScope', '$timeout', 'config',
         function ($http, $q, $window, flash, $rootScope, $timeout, config) {
-            var userInfo;
-            var lastActivity;
+            var userInfo,
+                lastActivity;
 
             function login(username, password) {
                 $http({
@@ -92,7 +92,7 @@ angular.module('auth', ['flash'])
             function logout() {
                 $http({
                     method: "DELETE",
-                    url: "/api/auth/token"
+                    url: "/api/auth/token/" + userInfo.token
                 }).then(function (result) {
                     clearUserInfo();
                     $rootScope.$broadcast('auth:logout');
