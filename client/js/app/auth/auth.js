@@ -103,15 +103,19 @@ angular.module('auth', ['flash'])
             }
 
             function trackSession() {
-                $timeout(function () {
-                    var tokenAge = new Date() - lastActivity;
-                    if (tokenAge > config.accessTokenTTL) {
-                        logout();
-                    } else {
-                        console.log(tokenAge);
-                        trackSession();
-                    }
-                }, 1000)
+                $timeout(
+                    function () {
+                        if (!userInfo) {
+                            return;
+                        }
+
+                        var tokenAge = new Date() - lastActivity;
+                        if (tokenAge > config.accessTokenTTL) {
+                            logout();
+                        } else {
+                            trackSession();
+                        }
+                    }, 1000)
             }
 
             function getUserInfo() {
