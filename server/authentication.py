@@ -4,17 +4,15 @@ import shelve
 import flask
 import re
 import time
+from functools import wraps
 
+from flask import request, Response
 from flask.ext.restful import reqparse, Resource
 from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import JSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired, BadSignature
 
-from functools import wraps
-from flask import request, Response
-
 from server import app, api
-
 
 def requires_auth(f):
     @wraps(f)
@@ -30,8 +28,16 @@ def requires_auth(f):
         flask.g.user = user
         flask.g.token = token
 
+        extend_token_lifespan(token)
+
         return f(*args, **kwargs)
     return decorated
+
+@app.after_request
+def after_request(response):
+    if hasattr(flask.g, 'token'):
+        response.headers.add('X-Access-Token-Renewed', 'True')
+    return response
 
 def authenticate_token(token):
     data = get_token(token)
@@ -41,7 +47,7 @@ def authenticate_token(token):
     ttl = app.config['ACCESS_TOKEN_TTL']
     token_age = time.time() - data['timestamp']
     if token_age > ttl:
-        return None    
+        return None
 
     token_data = verify_auth_token(token)
     if not token_data:
@@ -145,6 +151,13 @@ def verify_auth_token(token):
     except BadSignature:
         return None
 
+def extend_token_lifespan(token):
+    key = ucode(token)
+    with TokenDB() as db:
+        if key in db:
+            data = db[key]
+            data['timestamp'] = time.time()
+            db[key] = data
 
 ## Views
 
