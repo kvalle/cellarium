@@ -16,7 +16,6 @@ angular.module('api', ['flash'])
                 if (beerId) {
                     url += '/' + beerId;
                 }
-                console.log(url);
                 return url;
             };
 

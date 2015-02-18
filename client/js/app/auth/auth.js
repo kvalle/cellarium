@@ -23,7 +23,8 @@ angular.module('auth', ['flash'])
                 request: function(config) {
                     var authentication = $injector.get('authentication');
                     var user = authentication.getUserInfo();
-                    if (user) {
+                    var apiCall = _.startsWith(config.url, '/api/');
+                    if (user && apiCall) {
                         config.headers['X-Access-Token'] = user.token;
                     }
                     console.log("DOING REQUEST: ", config);
