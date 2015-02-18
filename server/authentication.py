@@ -3,10 +3,11 @@
 import shelve
 import flask
 import re
+import time
 
 from flask.ext.restful import reqparse, Resource
 from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import JSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired, BadSignature
 
 from functools import wraps
@@ -33,14 +34,20 @@ def requires_auth(f):
     return decorated
 
 def authenticate_token(token):
-    if not token_is_stored(token):
-        return None
-
-    data = verify_auth_token(token)
+    data = get_token(token)
     if not data:
         return None
 
-    return get_user(data["username"])
+    ttl = app.config['ACCESS_TOKEN_TTL']
+    token_age = time.time() - data['timestamp']
+    if token_age > ttl:
+        return None    
+
+    token_data = verify_auth_token(token)
+    if not token_data:
+        return None
+
+    return get_user(token_data["username"])
 
 def abort_401():
     return Response('Authentication required', 401, {'WWW-Authenticate': 'Token'})
@@ -99,25 +106,31 @@ def is_legal_username(username):
 
 class TokenDB:
     def __enter__(self):
-        self.db = shelve.open('db/token.db')
+        self.db = shelve.open('db/tokens.db')
         return self.db
 
     def __exit__(self, type, value, tb):
         self.db.close()
 
 
-def generate_auth_token(username):
-    expiration = app.config['TOKEN_EXPIRATION_TIME']
-    s = Serializer(app.config['SECRET_KEY'], expires_in = expiration)
-    return s.dumps({ 'username': username })
+def generate_auth_token(username, timestamp):
+    s = Serializer(app.config['SECRET_KEY'])
+    return s.dumps({ 
+        'username': username, 
+        'generated': timestamp 
+    })
 
-def token_is_stored(token):
+def get_token(token):
+    key = ucode(token)
     with TokenDB() as db:
-        return ucode(token) in db
+        return db[key] if key in db else None
 
-def store_token(token):
+def store_token(token, username, timestamp):
     with TokenDB() as db:
-        db[ucode(token)] = True
+        db[ucode(token)] = {
+            'timestamp': timestamp,
+            'username': username
+        }
 
 def delete_token(token):
     with TokenDB() as db:
@@ -129,10 +142,8 @@ def verify_auth_token(token):
     
     try:
         return s.loads(token)
-    except SignatureExpired:
-        return None # valid token, but expired
     except BadSignature:
-        return None # invalid token
+        return None
 
 
 ## Views
@@ -152,6 +163,8 @@ parser.add_argument('password',
 class Token(Resource):
 
     def post(self):
+        "Obtain acces token by providing username/password"
+
         user = parser.parse_args()
         username = user['username']
         password = user['password']
@@ -159,8 +172,9 @@ class Token(Resource):
         if not verify_password(username, password):
             return "Unauthorized Access", 401
         
-        token = generate_auth_token(username)
-        store_token(token)
+        timestamp = time.time()
+        token = generate_auth_token(username, timestamp)
+        store_token(token, username, timestamp)
         return {
             "token": token.decode('ascii'),
             "username": username
@@ -168,6 +182,8 @@ class Token(Resource):
 
     @requires_auth
     def delete(self):
+        "Delete current access token"
+
         token = None
         delete_token(flask.g.token)
         return '', 204
@@ -190,5 +206,5 @@ class Users(Resource):
         return {"username": user["username"]}, 201
 
 
-api.add_resource(Token,       '/api/auth/token')
-api.add_resource(Users,       '/api/auth/users')
+api.add_resource(Token, '/api/auth/token')
+api.add_resource(Users, '/api/auth/users')
