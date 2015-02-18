@@ -12,7 +12,7 @@ from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import JSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired, BadSignature
 
-from server import app, api
+from cellarium import app, api
 
 def requires_auth(f):
     @wraps(f)

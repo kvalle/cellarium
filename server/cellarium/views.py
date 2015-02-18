@@ -3,9 +3,9 @@
 from flask.ext.restful import reqparse, Resource
 import flask
 
-from server import api
-from server import repository as repo
-from server import authentication as auth
+from cellarium import api
+from cellarium import repository as repo
+from cellarium import authentication as auth
 
 
 parser = reqparse.RequestParser()

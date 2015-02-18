@@ -5,7 +5,7 @@ from flask.ext.restful import abort
 import flask
 import shelve
 
-from server import app
+from cellarium import app
 from exceptions import BeerNotFoundException
 
 from flask import request

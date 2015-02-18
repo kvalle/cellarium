@@ -6,9 +6,9 @@ import os
 
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(current_dir + "/..")
+sys.path.append(current_dir + "/../server/")
 
-from server import app
+from cellarium import app
 from flask import send_from_directory
 
 @app.route('/', defaults={'filename': 'index.html'})

@@ -17,11 +17,11 @@ class CellariumApi(Api):
 
 
 app = Flask("Cellarium")
-app.config.from_pyfile("server/config.cfg")
 if os.environ.get('CELLARIUM_CONFIG'):
     app.config.from_envvar('CELLARIUM_CONFIG')
 else:
     print " * CELLARIUM_CONFIG is not set, running with default config"
+    app.config.from_pyfile("config.cfg")
 
 api = CellariumApi(app)
 
