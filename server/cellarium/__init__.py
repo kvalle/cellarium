@@ -17,7 +17,13 @@ class CellariumApi(Api):
 
 
 if not os.environ.get('CELLARIUM_HOME'):
-	raise "Error: CELLARIUM_HOME is not set."
+    msg = """
+    CELLARIUM_HOME is not set.
+    You can solve this by setting the following environment variable:
+
+        export CELLARIUM_HOME='/path/to/folder/with/cellarium/module'
+    """
+    raise Exception(msg)
 
 app = Flask("Cellarium")
 if os.environ.get('CELLARIUM_CONFIG'):
