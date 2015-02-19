@@ -68,7 +68,6 @@ def ucode(string):
 class UserDB:
     def __enter__(self):
         db_path = '{}/users.db'.format(app.config['DB_PATH'])
-        print db_path
         self.db = shelve.open(db_path)
         return self.db
 
