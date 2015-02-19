@@ -221,6 +221,6 @@ class Users(Resource):
         return {"username": user["username"]}, 201
 
 
-api.add_resource(Users,       '/api/auth/users')
+#api.add_resource(Users,       '/api/auth/users')
 api.add_resource(CreateToken, '/api/auth/token')
 api.add_resource(RevokeToken, '/api/auth/token/<string:token>')
