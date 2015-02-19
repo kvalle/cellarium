@@ -92,11 +92,19 @@ def add_user(username, password):
         return False
 
     data = {
-        "password_hash": pwd_context.encrypt(password)
+        "password_hash": pwd_context.encrypt(password),
+        "created": time.time(),
+        "username": username
     }
 
     with UserDB() as db:
         db[ucode(username)] = data
+
+    return data
+
+def remove_user(username):
+    with UserDB() as db:
+        del db[ucode(username)]
 
 def correct_password(user, password):
     return pwd_context.verify(password, user["password_hash"])

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import os, os.path
 from flask.ext.restful import abort
 import flask
 import shelve
@@ -59,6 +60,11 @@ def update_beer(user, beer_id, beer):
         db[beer_id] = beer
 
     return beer
+
+def remove_all_beers(user):
+    db_path = BeerDB(user).path
+    if os.path.isfile(db_path):
+        os.remove(db_path) 
 
 def list_beers(user):
     with BeerDB(user) as db:

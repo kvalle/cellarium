@@ -2,7 +2,7 @@
 
 import sys
 import os, os.path
-from flask.ext.script import Manager
+from flask.ext.script import Manager, prompt_bool
 
 ## Initial setup to be able to import Cellarium app properly
 
@@ -16,7 +16,7 @@ os.environ["CELLARIUM_HOME"] = "{}".format(cellarium_home)
 ## Importing app and initializing manager
 
 from flask import send_from_directory
-from cellarium import app
+from cellarium import app, authentication, repository
 
 manager = Manager(app)
 
@@ -30,8 +30,38 @@ def static_files(filename):
 
 @manager.command
 def dev():
-    "Run Cellarium dev server with client + API"
+    "Runs Cellarium dev server with client + API"
     app.run(port=1337, host='0.0.0.0', debug=True)
+
+
+## TASK: Manage users
+
+@manager.option('-p', '--password', dest='password', required=True)
+@manager.option('-n', '--name', dest='name', required=True)
+def adduser(name, password):
+    "Adds new user"
+
+    success = authentication.add_user(name, password)
+    if success:
+        print "> added user '{}'".format(name)
+    else:
+        print "> seems user '{}' already exits...".format(name)
+
+@manager.option('-n', '--name', dest='name', required=True)
+def killuser(name):
+    "Removes user and associated beers"
+
+    user = authentication.get_user(name)
+    if not user:
+        print "> found no user named '{}'".format(name)
+        return
+
+    if prompt_bool("Are you sure you want completely remove user '{}'".format(name)):
+        authentication.remove_user(name)
+        repository.remove_all_beers(name)
+        print "> Removed {} and all his/her beers!".format(name)
+    else:
+        print "> Aborted."
 
 
 if __name__ == "__main__":
