@@ -134,7 +134,7 @@ angular.module('auth', ['flash'])
             function init() {
                 try {
                     userInfo = JSON.parse($window.sessionStorage["userInfo"]);
-                } catch {
+                } catch (e) {
                     userInfo = null;
                 }
 
