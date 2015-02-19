@@ -19,7 +19,7 @@ Setup:
 Run it:
 
 - Run `./manage.py dev`
-- Go to http://localhost:1337/cellarium/
+- Go to [localhost:1337/cellarium/](http://localhost:1337/cellarium/)
 
 ### Is it done yet?
 
