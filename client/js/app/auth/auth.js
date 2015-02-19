@@ -132,7 +132,12 @@ angular.module('auth', ['flash'])
             }
 
             function init() {
-                userInfo = JSON.parse($window.sessionStorage["userInfo"]);
+                try {
+                    userInfo = JSON.parse($window.sessionStorage["userInfo"]);
+                } catch {
+                    userInfo = null;
+                }
+
                 if (userInfo) {
                     registerActivity();
                     trackSession();
