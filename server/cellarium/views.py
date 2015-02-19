@@ -65,5 +65,5 @@ class BeerList(Resource):
         return saved_beer, 201
 
 
-api.add_resource(BeerList, '/api/beers')
-api.add_resource(Beer,     '/api/beers/<string:beer_id>')
+api.add_resource(BeerList, '/beers')
+api.add_resource(Beer,     '/beers/<string:beer_id>')
