@@ -12,7 +12,7 @@ angular.module('api', ['flash'])
         function($http, defaults, flash) {
 
             var urlFor = function (beerId) {
-                var url = 'api/beers';
+                var url = '/api/beers';
                 if (beerId) {
                     url += '/' + beerId;
                 }

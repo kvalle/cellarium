@@ -6,13 +6,17 @@ import os
 
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(current_dir + "/../server/")
+cellarium_home = current_dir + "/../server/"
+
+sys.path.append(cellarium_home)
+os.environ["CELLARIUM_HOME"] = "{}".format(cellarium_home)
+
 
 from cellarium import app
 from flask import send_from_directory
 
-@app.route('/', defaults={'filename': 'index.html'})
-@app.route('/<path:filename>')
+@app.route('/cellarium/', defaults={'filename': 'index.html'})
+@app.route('/cellarium/<path:filename>')
 def static_files(filename):
     return send_from_directory(os.path.join(current_dir, '../client/'), filename)
 

@@ -16,12 +16,15 @@ class CellariumApi(Api):
         return super(CellariumApi, self).handle_error(e)
 
 
+if not os.environ.get('CELLARIUM_HOME'):
+	raise "Error: CELLARIUM_HOME is not set."
+
 app = Flask("Cellarium")
 if os.environ.get('CELLARIUM_CONFIG'):
     app.config.from_envvar('CELLARIUM_CONFIG')
 else:
     print " * CELLARIUM_CONFIG is not set, running with default config"
-    app.config.from_pyfile("config.cfg")
+    app.config.from_pyfile(os.environ.get('CELLARIUM_HOME') + "/cellarium/config.cfg")
 
 api = CellariumApi(app)
 
