@@ -67,7 +67,9 @@ def ucode(string):
 
 class UserDB:
     def __enter__(self):
-        self.db = shelve.open('db/users.db')
+        db_path = '{}/users.db'.format(app.config['DB_PATH'])
+        print db_path
+        self.db = shelve.open(db_path)
         return self.db
 
     def __exit__(self, type, value, tb):
@@ -112,7 +114,8 @@ def is_legal_username(username):
 
 class TokenDB:
     def __enter__(self):
-        self.db = shelve.open('db/tokens.db')
+        db_path = '{}/tokens.db'.format(app.config['DB_PATH'])
+        self.db = shelve.open(db_path)
         return self.db
 
     def __exit__(self, type, value, tb):

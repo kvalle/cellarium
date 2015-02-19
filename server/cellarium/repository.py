@@ -11,10 +11,9 @@ from exceptions import BeerNotFoundException
 from flask import request
 from pprint import pprint as pp
 
-
 class BeerDB:
     def __init__(self, user):
-        self.path = 'db/beers/{}.db'.format(user)
+        self.path = '{}/beers/{}.db'.format(app.config['DB_PATH'], user)
 
     def __enter__(self):
         self.db = shelve.open(self.path)
