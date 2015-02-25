@@ -28,10 +28,14 @@ manager = Manager(app)
 def static_files(filename):
     return send_from_directory(os.path.join(current_dir, 'client'), filename)
 
-@manager.command
-def dev():
+@manager.option('-h', '--host', dest='host', type=str, default="0.0.0.0")
+@manager.option('-p', '--port', dest='port', type=int, default=1337)
+@manager.option('-d', '--debug', dest='debug', choices=['on', 'off'], default='on')
+def dev(host, port, debug):
     "Runs Cellarium dev server with client + API"
-    app.run(port=1337, host='0.0.0.0', debug=True)
+
+    with_debug = debug == 'on'
+    app.run(port=port, host=host, debug=with_debug)
 
 
 ## TASK: Manage users
