@@ -2,7 +2,7 @@
 
 import sys
 import os, os.path
-from flask.ext.script import Manager, prompt_bool
+from flask.ext.script import Manager, prompt, prompt_bool, prompt_pass
 
 ## Initial setup to be able to import Cellarium app properly
 
@@ -40,32 +40,55 @@ def dev(host, port, debug):
 
 ## TASK: Manage users
 
-@manager.option('-p', '--password', dest='password', required=True)
-@manager.option('-n', '--name', dest='name', required=True)
-def adduser(name, password):
-    "Adds new user"
+user_manager = Manager(usage = "Administrate users")
+manager.add_command("users", user_manager)
+
+
+@user_manager.option(dest='name')
+@user_manager.option('-p', '--password', dest='password', required=False)
+def add(name, password):
+    "Adds a new user"
+    
+    if not password:
+        password = prompt_pass("Password")
 
     success = authentication.add_user(name, password)
     if success:
-        print "> added user '{}'".format(name)
+        print "> Added user '{}'".format(name)
     else:
-        print "> seems user '{}' already exits...".format(name)
+        print "> Seems user '{}' already exits...".format(name)
 
-@manager.option('-n', '--name', dest='name', required=True)
-def killuser(name):
-    "Removes user and associated beers"
 
+@user_manager.option(dest='name')
+@user_manager.option('--keep-cellar', dest='keep_cellar', choices=['yes', 'no'], default='no')
+def remove(name, keep_cellar):
+    "Removes an existing user along with his/her cellar"
+    
     user = authentication.get_user(name)
     if not user:
-        print "> found no user named '{}'".format(name)
+        print "> Found no user named '{}'".format(name)
         return
 
-    if prompt_bool("Are you sure you want completely remove user '{}'".format(name)):
-        authentication.remove_user(name)
-        repository.remove_all_beers(name)
-        print "> Removed {} and all his/her beers!".format(name)
-    else:
+    prompt = "This will completely remove user '{}' {} \nProceed?".format(
+        name, 
+        "along with his/her cellar" if keep_cellar == 'no' else "")
+
+    if not prompt_bool(prompt):
         print "> Aborted."
+        return
+
+    authentication.remove_user(name)
+    if keep_cellar == 'no':
+        repository.remove_all_beers(name)
+    print "> Removed {}".format(name)
+    
+
+@user_manager.command
+def list():
+    "Lists all usernames"
+
+    print "\n".join(sorted(authentication.get_users()))
+
 
 
 if __name__ == "__main__":
