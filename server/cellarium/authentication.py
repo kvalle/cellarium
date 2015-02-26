@@ -87,6 +87,12 @@ def get_user(username):
     user["username"] = username
     return user
 
+def update_user_password(username, new_password):
+    with UserDB() as db:
+        user = db[ucode(username)]
+        user['password_hash'] = pwd_context.encrypt(new_password)
+        db[ucode(username)] = user
+
 def add_user(username, password):
     if get_user(username):
         return False
@@ -106,16 +112,15 @@ def remove_user(username):
     with UserDB() as db:
         del db[ucode(username)]
 
-def correct_password(user, password):
-    return pwd_context.verify(password, user["password_hash"])
-
 def verify_password(username, password):
     user = get_user(username)
-    return user and correct_password(user, password)
+    return user and pwd_context.verify(password, user["password_hash"])
 
 def is_legal_username(username):
     return re.match('^[\w_]+$', username)
 
+def is_acceptable_password(password):
+    return password and len(password) >= 8
 
 ## Tokens
 
@@ -169,19 +174,7 @@ def extend_token_lifespan(token):
             data['timestamp'] = time.time()
             db[key] = data
 
-## Views
-
-parser = reqparse.RequestParser()
-parser.add_argument('username', 
-    type=unicode, 
-    location=["json", "values"], 
-    required=True)
-
-parser.add_argument('password', 
-    type=unicode, 
-    location=["json", "values"], 
-    required=True)
-
+## Token views
 
 class CreateToken(Resource):
 
@@ -211,6 +204,24 @@ class RevokeToken(Resource):
         delete_token(token)
         return '', 204
 
+## User views
+
+parser = reqparse.RequestParser()
+parser.add_argument('username', 
+    type=unicode, 
+    location=["json", "values"], 
+    required=True)
+
+parser.add_argument('password', 
+    type=unicode, 
+    location=["json", "values"], 
+    required=True)
+
+parser.add_argument('new_password', 
+    type=unicode, 
+    location=["json", "values"], 
+    required=False)
+
 class Users(Resource):
 
     def get(self):
@@ -219,16 +230,29 @@ class Users(Resource):
     def post(self):
         user = parser.parse_args()
 
-        if not is_legal_username(user["username"]):
-            return {"message": "Bad username: only letters and numbers allowed."}, 403
+        if not is_legal_username(user.username):
+            return {"message": "Bad username: only letters and numbers allowed."}, 400
 
         if get_user(user["username"]):
-            return {"message": "Username already taken."}, 403
+            return {"message": "Username already taken."}, 400
 
         add_user(user.username, user.password)
         return {"username": user["username"]}, 201
 
+    def put(self):
+        data = parser.parse_args()
 
-#api.add_resource(Users,       '/api/auth/users')
+        if not verify_password(data.username, data.password):
+            return "Unauthorized", 401
+
+        if not is_acceptable_password(data.new_password):
+            return {"message": "New password not strong enough."}, 400
+
+        update_user_password(data.username, data.new_password)
+
+        return "", 200
+
+
+api.add_resource(Users,       '/api/auth/users')
 api.add_resource(CreateToken, '/api/auth/token')
 api.add_resource(RevokeToken, '/api/auth/token/<string:token>')
