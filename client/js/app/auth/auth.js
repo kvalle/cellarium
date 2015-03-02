@@ -12,6 +12,11 @@ angular.module('auth', ['flash'])
             authentication.logout();
         }])
 
+    .controller("AuthSettingsCtrl", ["$scope", "authentication",
+        function ($scope, authentication) {
+            $scope.changePassword = authentication.changePassword;
+        }])
+
     .config(['$httpProvider',
         function($httpProvider) {
             $httpProvider.interceptors.push('authHttpResponseInterceptor');

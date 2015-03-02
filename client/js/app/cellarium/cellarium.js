@@ -34,8 +34,6 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
             $scope.exportName = "beers-" + username + ".json";
             $scope.exportUrl = "";
 
-            $scope.changePassword = authentication.changePassword;
-
             beerApi.getBeers(function(data) {
                 var beerList = _.values(data);
                 var content = JSON.stringify(beerList, null, '\t');
