@@ -35,6 +35,7 @@ def dev(host, port, debug):
     "Runs Cellarium dev server with client + API"
 
     with_debug = debug == 'on'
+    app.config.update(SEND_FILE_MAX_AGE_DEFAULT=0)
     app.run(port=port, host=host, debug=with_debug)
 
 
