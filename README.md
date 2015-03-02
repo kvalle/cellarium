@@ -30,7 +30,6 @@ No.
 Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
 - better logging from flask
-- add 'change password' form on settings page
 - list ordering: https://docs.angularjs.org/api/ng/filter/orderBy
 - auto-suggest beers from untappd/ratebeer
 - bug: flash messages don't work after one have been dismissed

@@ -34,6 +34,8 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
             $scope.exportName = "beers-" + username + ".json";
             $scope.exportUrl = "";
 
+            $scope.changePassword = authentication.changePassword;
+
             beerApi.getBeers(function(data) {
                 var beerList = _.values(data);
                 var content = JSON.stringify(beerList, null, '\t');
@@ -111,4 +113,33 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
                     $location.path('/');
                 });
             };
-        }]);
+        }])
+
+    .directive('fieldMustEqual', 
+        function() {
+            return {
+                require: 'ngModel',
+                link: function (scope, elem, attrs, model) {
+                    if (!attrs.fieldMustEqual) {
+                        console.error('fieldMustEqual expects a model as an argument!');
+                        return;
+                    }
+                    scope.$watch(attrs.fieldMustEqual, function (value) {
+                        // Only compare values if the second ctrl has a value.
+                        if (model.$viewValue !== undefined && model.$viewValue !== '') {
+                            model.$setValidity('fieldMustEqual', value === model.$viewValue);
+                        }
+                    });
+                    model.$parsers.push(function (value) {
+                        // Mute the nxEqual error if the second ctrl is empty.
+                        if (value === undefined || value === '') {
+                            model.$setValidity('fieldMustEqual', true);
+                            return value;
+                        }
+                        var isValid = value === scope.$eval(attrs.fieldMustEqual);
+                        model.$setValidity('fieldMustEqual', isValid);
+                        return isValid ? value : undefined;
+                    });
+                }
+            };
+    });

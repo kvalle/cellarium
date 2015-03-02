@@ -102,6 +102,26 @@ angular.module('auth', ['flash'])
                 });
             }
 
+            function changePassword(currentPassword, newPassword) {
+                var data = {
+                    username: userInfo.username,
+                    password: currentPassword,
+                    new_password: newPassword
+                }
+                console.log("CHANING PASSWORD");
+                console.log(data);
+                $http({
+                    method: "PUT",
+                    url: "/api/auth/users",
+                    data: data
+                }).then(function (result) {
+                    flash.info("Password changed successfully");
+                    console.log("PASSWORD CHANGED");
+                }, function (error) {
+                    console.error("PASSWORD NOT CHANGED:", error);
+                });
+            }
+
             function trackSession() {
                 $timeout(
                     function () {
@@ -153,6 +173,7 @@ angular.module('auth', ['flash'])
                 login: login,
                 logout: logout,
                 getUserInfo: getUserInfo,
-                registerActivity: registerActivity
+                registerActivity: registerActivity,
+                changePassword: changePassword
             };
         }]);

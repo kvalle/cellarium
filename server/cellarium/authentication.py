@@ -243,6 +243,8 @@ class Users(Resource):
         data = parser.parse_args()
 
         if not verify_password(data.username, data.password):
+            print data.username
+            print data.password
             return "Unauthorized", 401
 
         if not is_acceptable_password(data.new_password):
