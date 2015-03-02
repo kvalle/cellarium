@@ -29,10 +29,11 @@ No.
 
 Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
+- clear flash-messages on view change
+- bug: flash messages don't work after one have been dismissed
 - better logging from flask
 - list ordering: https://docs.angularjs.org/api/ng/filter/orderBy
 - auto-suggest beers from untappd/ratebeer
-- bug: flash messages don't work after one have been dismissed
 - clean up naming within modules
 - clean up dependencies on flash service
 - contextual-classes for showing changes: http://getbootstrap.com/css/#tables-contextual-classes

@@ -15,6 +15,7 @@ angular.module('auth', ['flash'])
     .controller("AuthSettingsCtrl", ["$scope", "authentication",
         function ($scope, authentication) {
             $scope.changePassword = authentication.changePassword;
+            $scope.logOutEverywhere = authentication.logOutEverywhere;
         }])
 
     .config(['$httpProvider',
@@ -75,7 +76,7 @@ angular.module('auth', ['flash'])
             function login(username, password) {
                 $http({
                     method: "POST",
-                    url: "/api/auth/token",
+                    url: "/api/auth/tokens",
                     data: { username: username, password: password }
                 }).then(function (result) {
                     userInfo = result.data;
@@ -97,7 +98,7 @@ angular.module('auth', ['flash'])
             function logout() {
                 $http({
                     method: "DELETE",
-                    url: "/api/auth/token/" + userInfo.token
+                    url: "/api/auth/tokens/" + userInfo.token
                 }).then(function (result) {
                     clearUserInfo();
                     $rootScope.$broadcast('auth:logout');
@@ -113,8 +114,6 @@ angular.module('auth', ['flash'])
                     password: currentPassword,
                     new_password: newPassword
                 }
-                console.log("CHANING PASSWORD");
-                console.log(data);
                 $http({
                     method: "PUT",
                     url: "/api/auth/users",
@@ -123,9 +122,25 @@ angular.module('auth', ['flash'])
                     flash.info("Password changed successfully");
                     console.log("PASSWORD CHANGED");
                 }, function (error) {
-                    if (error.status == 400 && error.data.message) {
-                        flash.error(error.data.message);
-                        console.error("PASSWORD NOT CHANGED:", error);
+                    if (error.status == 400 && error.data.userMessage) {
+                        flash.error(error.data.userMessage);
+                    } else {
+                        throw error;
+                    }
+                });
+            }
+
+            function logOutEverywhere() {
+                $http({
+                    method: "DELETE",
+                    url: "/api/auth/tokens"
+                }).then(function () {
+                    clearUserInfo();
+                    flash.info("All sessions terminated")
+                    $rootScope.$broadcast('auth:logout');
+                }, function (error) {
+                    if (error.status == 400 && error.data.userMessage) {
+                        flash.error(error.data.userMessage);
                     } else {
                         throw error;
                     }
@@ -184,6 +199,7 @@ angular.module('auth', ['flash'])
                 logout: logout,
                 getUserInfo: getUserInfo,
                 registerActivity: registerActivity,
-                changePassword: changePassword
+                changePassword: changePassword,
+                logOutEverywhere: logOutEverywhere
             };
         }]);

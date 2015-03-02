@@ -146,6 +146,14 @@ def get_token(token):
     with TokenDB() as db:
         return db[key] if key in db else None
 
+def get_tokens():
+    with TokenDB() as db:
+        return {token: db[token] for token in db}
+
+def get_users():
+    with UserDB() as db:
+        return {user: db[user] for user in db}
+
 def store_token(token, username, timestamp):
     with TokenDB() as db:
         db[ucode(token)] = {
@@ -153,10 +161,16 @@ def store_token(token, username, timestamp):
             'username': username
         }
 
-def delete_token(token):
+def revoke_token(token):
     with TokenDB() as db:
         if ucode(token) in db:
             del db[ucode(token)]
+
+def revoke_tokens_for_user(username):
+    with TokenDB() as db:
+        for token in db:
+            if db[token]["username"] == username:
+                del db[ucode(token)]
 
 def verify_auth_token(token):
     s = Serializer(app.config['SECRET_KEY'])
@@ -174,9 +188,36 @@ def extend_token_lifespan(token):
             data['timestamp'] = time.time()
             db[key] = data
 
+## Request parser
+
+parser = reqparse.RequestParser()
+parser.add_argument('username', 
+    type=unicode, 
+    location=["json", "values"], 
+    required=False)
+
+parser.add_argument('password', 
+    type=unicode, 
+    location=["json", "values"], 
+    required=False)
+
+parser.add_argument('new_password', 
+    type=unicode, 
+    location=["json", "values"], 
+    required=False)
+
+
 ## Token views
 
-class CreateToken(Resource):
+class Tokens(Resource):
+
+    def get(self):
+        "List all tokens"
+
+        if not app.debug:
+            return "Sorry, Dave.", 418
+
+        return get_tokens(), 200
 
     def post(self):
         "Obtain acces token by providing username/password"
@@ -186,7 +227,7 @@ class CreateToken(Resource):
         password = user['password']
 
         if not verify_password(username, password):
-            return "Unauthorized Access", 401
+            return {"userMessage": "Wrong password"}, 400
         
         timestamp = time.time()
         token = generate_auth_token(username, timestamp)
@@ -196,45 +237,50 @@ class CreateToken(Resource):
             "username": username
         }, 200
 
-class RevokeToken(Resource):
+    @requires_auth
+    def delete(self):
+        "Revoke all access tokens created by user"
+
+        user = flask.g.user
+        print user
+        revoke_tokens_for_user(user['username'])
+        
+        return '', 204
+
+class Token(Resource):
 
     def delete(self, token):
         "Revoke access token"
 
-        delete_token(token)
+        revoke_token(token)
         return '', 204
 
+
 ## User views
-
-parser = reqparse.RequestParser()
-parser.add_argument('username', 
-    type=unicode, 
-    location=["json", "values"], 
-    required=True)
-
-parser.add_argument('password', 
-    type=unicode, 
-    location=["json", "values"], 
-    required=True)
-
-parser.add_argument('new_password', 
-    type=unicode, 
-    location=["json", "values"], 
-    required=False)
 
 class Users(Resource):
 
     def get(self):
-        return get_users()
+        "List all users"
+
+        if not app.debug:
+            return "Sorry, Dave.", 418
+
+        return get_users(), 200
 
     def post(self):
+        "Create new user"
+
+        if not app.debug:
+            return "Sorry, Dave.", 418
+
         user = parser.parse_args()
 
         if not is_legal_username(user.username):
-            return {"message": "Bad username: only letters and numbers allowed."}, 400
+            return {"userMessage": "Bad username: only letters and numbers allowed."}, 400
 
         if get_user(user["username"]):
-            return {"message": "Username already taken."}, 400
+            return {"userMessage": "Username already taken."}, 400
 
         add_user(user.username, user.password)
         return {"username": user["username"]}, 201
@@ -243,16 +289,16 @@ class Users(Resource):
         data = parser.parse_args()
 
         if not verify_password(data.username, data.password):
-            return {"message": "Wrong password"}, 400
+            return {"userMessage": "Wrong password"}, 400
 
         if not is_acceptable_password(data.new_password):
-            return {"message": "New password not strong enough."}, 400
+            return {"userMessage": "New password not strong enough."}, 400
 
         update_user_password(data.username, data.new_password)
 
         return "", 200
 
 
-api.add_resource(Users,       '/api/auth/users')
-api.add_resource(CreateToken, '/api/auth/token')
-api.add_resource(RevokeToken, '/api/auth/token/<string:token>')
+api.add_resource(Users,  '/api/auth/users')
+api.add_resource(Token,  '/api/auth/tokens/<string:token>')
+api.add_resource(Tokens, '/api/auth/tokens')
