@@ -123,7 +123,12 @@ angular.module('auth', ['flash'])
                     flash.info("Password changed successfully");
                     console.log("PASSWORD CHANGED");
                 }, function (error) {
-                    console.error("PASSWORD NOT CHANGED:", error);
+                    if (error.status == 400 && error.data.message) {
+                        flash.error(error.data.message);
+                        console.error("PASSWORD NOT CHANGED:", error);
+                    } else {
+                        throw error;
+                    }
                 });
             }
 

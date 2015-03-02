@@ -245,7 +245,7 @@ class Users(Resource):
         if not verify_password(data.username, data.password):
             print data.username
             print data.password
-            return "Unauthorized", 401
+            return {"message": "Wrong password"}, 400
 
         if not is_acceptable_password(data.new_password):
             return {"message": "New password not strong enough."}, 400
