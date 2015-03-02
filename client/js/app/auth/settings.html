@@ -1,4 +1,4 @@
-    <h3>Manage Credentials</h3>
+    <h3>Change password</h3>
 
     <form name="pwdForm" class="form-horizontal" role="form">
 
@@ -12,7 +12,7 @@
         <div class="form-group" ng-class="{'has-error': pwdForm.new.$invalid && !pwdForm.new.$pristine}">
             <label for="new" class="col-sm-2 control-label">New password</label>
             <div class="col-sm-8">
-                <input id="new" class="form-control" type="password" name="new" ng-model="password.new" ng-minlength="8">
+                <input id="new" class="form-control" type="password" name="new" ng-model="password.new" ng-minlength="8" required>
             </div>
             <div class="col-sm-2" ng-class="{'has-error': pwdForm.new.$invalid && !pwdForm.new.$pristine}">
                 <span class="help-block" ng-show="pwdForm.new.$error.minlength && !pwdForm.new.$pristine">Too short, keep typing</span>
@@ -22,7 +22,7 @@
         <div class="form-group" ng-class="{'has-error': pwdForm.newRepeat.$invalid && !pwdForm.newRepeat.$pristine}">
             <label for="newRepeat" class="col-sm-2 control-label">New password (again)</label>
             <div class="col-sm-8">
-                <input id="newRepeat" class="form-control" type="password" name="newRepeat" ng-model="password.newRepeat" field-must-equal="password.new">
+                <input id="newRepeat" class="form-control" type="password" name="newRepeat" ng-model="password.newRepeat" field-must-equal="password.new" required>
             </div>
             <div class="col-sm-2" ng-class="{'has-error': pwdForm.newRepeat.$invalid && !pwdForm.newRepeat.$pristine}">
                 <span class="help-block" ng-show="pwdForm.newRepeat.$error.fieldMustEqual && !pwdForm.newRepeat.$pristine">Not equal!</span>
@@ -31,7 +31,7 @@
 
         <div class="form-group">
             <div class="col-sm-12">
-                <button ng-click="changePassword(password.current, password.new)" ng-disabled="!pwdForm.current.$viewValue || pwdForm.$invalid" class="btn btn-default">Change password</button>
+                <button ng-click="changePassword(password.current, password.new)" ng-disabled="!pwdForm.current.$viewValue || pwdForm.$invalid" class="btn btn-primary">Change password</button>
             </div>
         </div>
     </form>
