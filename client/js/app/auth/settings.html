@@ -32,7 +32,9 @@
 
         <div class="form-group">
             <div class="col-sm-12">
-                <button ng-click="changePassword(password.current, password.new)" ng-disabled="!pwdForm.current.$viewValue || pwdForm.$invalid" class="btn btn-primary">Change password</button>
+                <button class="btn btn-primary"
+                    ng-click="changePassword(password.current, password.new)" 
+                    ng-disabled="!pwdForm.current.$viewValue || pwdForm.$invalid" >Change password</button>
             </div>
         </div>
     </form>
@@ -43,9 +45,7 @@
 
     <form class="form-horizontal" role="form">
 
-        <p>
-            To log out form all your sessons right now click the big red button.
-        </p>
+        <p>To log out form all your sessons right now click the big red button.</p>
 
         <div class="form-group">
             <div class="col-sm-12">
