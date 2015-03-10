@@ -44,7 +44,7 @@
                     </thead>
                     <tbody>
                         
-                        <tr ng-repeat="beer in beers | filter:beerFilter | orderBy:beerList.ordering">
+                        <tr ng-repeat="beer in beerList.beers | filter:beerFilter | orderBy:beerList.ordering">
                             <td>
                                 <span class="badge alert-info" ng-bind="beer.count" />
                             </td>

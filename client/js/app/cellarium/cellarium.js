@@ -47,18 +47,16 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
             $scope.defaults = beerDefaults;
             $scope.beer = {};
             $scope.newBeerRow = {visible: false};
-            $scope.beers = [];
-            $scope.beerList = {ordering: 'name'}
+            $scope.beerList = {
+                beers: [],
+                ordering: 'name'
+            }
 
             var updateBeerList = function() {
                 beerApi.getBeers(function(data) {
-                    // There must be a better way to do this without changing the reference?
-                    $scope.beers.length = 0;
-                    for (beer in data) {
-                        $scope.beers.push(data[beer]);
-                    }
+                    $scope.beerList.beers = _.values(data);
                 });
-            }
+            };
 
             $scope.sortBy = function(field) {
                 if ($scope.beerList.ordering === field) {
@@ -66,14 +64,14 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
                 } else {
                     $scope.beerList.ordering = field;
                 }
-            }
+            };
             
             $scope.showNewBeerRow = function() {
                 $scope.newBeerRow.visible = !$scope.newBeerRow.true;
                 $timeout(function() {
                     angular.element('#newBeerCount').focus();
                 });
-            }
+            };
 
             $scope.destroy = function(beer) {
                 beerApi.deleteBeer(beer, function() {
