@@ -34,3 +34,12 @@ a.faded { color: #CECECE; }
 .beer-count {
   max-width: 100px;
 }
+
+.sort-toggle {
+	cursor: pointer;
+}
+
+.sorted-marker {
+	color: #999;
+	font-size: .8em;
+}

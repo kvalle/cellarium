@@ -48,7 +48,8 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
             $scope.beer = {};
             $scope.newBeerRow = {visible: false};
             $scope.beers = [];
-            
+            $scope.beerList = {ordering: 'name'}
+
             var updateBeerList = function() {
                 beerApi.getBeers(function(data) {
                     // There must be a better way to do this without changing the reference?
@@ -57,6 +58,14 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
                         $scope.beers.push(data[beer]);
                     }
                 });
+            }
+
+            $scope.sortBy = function(field) {
+                if ($scope.beerList.ordering === field) {
+                    $scope.beerList.ordering = "-" + field;
+                } else {
+                    $scope.beerList.ordering = field;
+                }
             }
             
             $scope.showNewBeerRow = function() {

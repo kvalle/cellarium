@@ -15,18 +15,38 @@
                 <table class="beer-list table table-hover">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th>Brewery</th>
-                            <th>Name</th>
-                            <th>Vintage</th>
+                            <th class="sort-toggle" ng-click="sortBy('count')">
+                                #
+                                <span ng-show="beerList.ordering == '-count'" class="sorted-marker glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                <span ng-show="beerList.ordering == 'count'" class="sorted-marker glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                            </th>
+                            
+                            <th class="sort-toggle" ng-click="sortBy('brewery')">
+                                Brewery
+                                <span ng-show="beerList.ordering == '-brewery'" class="sorted-marker glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                <span ng-show="beerList.ordering == 'brewery'" class="sorted-marker glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                            </th>
+                            
+                            <th class="sort-toggle" ng-click="sortBy('name')">
+                                Name
+                                <span ng-show="beerList.ordering == 'name'" class="sorted-marker glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                <span ng-show="beerList.ordering == '-name'" class="sorted-marker glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                            </th>
+                            
+                            <th class="sort-toggle" ng-click="sortBy('vintage')">
+                                Vintage
+                                <span ng-show="beerList.ordering == '-vintage'" class="sorted-marker glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                <span ng-show="beerList.ordering == 'vintage'" class="sorted-marker glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                            </th>
+                            
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         
-                        <tr ng-repeat="beer in beers | filter:beerFilter | orderBy:'name'">
+                        <tr ng-repeat="beer in beers | filter:beerFilter | orderBy:beerList.ordering">
                             <td>
-                                <span class="pull-right badge alert-info" ng-bind="beer.count" />
+                                <span class="badge alert-info" ng-bind="beer.count" />
                             </td>
                             <td ng-bind="beer.brewery"/>
                             <td ng-bind="beer.name"/>
