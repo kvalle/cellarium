@@ -7,3 +7,4 @@ aniso8601==0.92
 itsdangerous==0.24
 passlib==1.6.2
 pytz==2014.10
+blinker==1.3

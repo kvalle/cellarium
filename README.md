@@ -31,15 +31,12 @@ Running, incomplete, and probaby not up to date list of stuff that needs doing:
 
 - clear flash-messages on view change
 - bug: flash messages don't work after one have been dismissed
-- better logging from flask
 - list ordering: https://docs.angularjs.org/api/ng/filter/orderBy
 - auto-suggest beers from untappd/ratebeer
-- clean up naming within modules
 - clean up dependencies on flash service
 - contextual-classes for showing changes: http://getbootstrap.com/css/#tables-contextual-classes
 - global error handling showing a generic message if anything goes wrong
 - logging js-errors to server; http://engineering.talis.com/articles/client-side-error-logging/
 - use cellery to clean stale tokens and such: http://flask.pocoo.org/docs/0.10/patterns/celery/
 - improve testing and documentation: http://www.jeffknupp.com/blog/2014/01/29/productionizing-a-flask-application/
-- logging of frontend errors
 - serve as HTTPS 

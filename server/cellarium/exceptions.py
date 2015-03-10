@@ -7,6 +7,7 @@ import abc
 class CellariumException(HTTPException):
 	"Base class for Exceptions"
 
+	code = 500
 	_metaclass__  = abc.ABCMeta
 
 
