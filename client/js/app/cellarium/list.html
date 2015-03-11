@@ -15,30 +15,10 @@
                 <table class="beer-list table table-hover">
                     <thead>
                         <tr>
-                            <th class="sort-toggle" ng-click="sortBy('count')">
-                                #
-                                <span ng-show="beerList.ordering == '-count'" class="sorted-marker glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                                <span ng-show="beerList.ordering == 'count'" class="sorted-marker glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                            </th>
-                            
-                            <th class="sort-toggle" ng-click="sortBy('brewery')">
-                                Brewery
-                                <span ng-show="beerList.ordering == '-brewery'" class="sorted-marker glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                                <span ng-show="beerList.ordering == 'brewery'" class="sorted-marker glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                            </th>
-                            
-                            <th class="sort-toggle" ng-click="sortBy('name')">
-                                Name
-                                <span ng-show="beerList.ordering == 'name'" class="sorted-marker glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                                <span ng-show="beerList.ordering == '-name'" class="sorted-marker glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                            </th>
-                            
-                            <th class="sort-toggle" ng-click="sortBy('vintage')">
-                                Vintage
-                                <span ng-show="beerList.ordering == '-vintage'" class="sorted-marker glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                                <span ng-show="beerList.ordering == 'vintage'" class="sorted-marker glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                            </th>
-                            
+                            <th sort-header="count">#</th>
+                            <th sort-header="brewery">Brewery</th>
+                            <th sort-header="name">Name</th>
+                            <th sort-header="vintage">Vintage</th>
                             <th></th>
                         </tr>
                     </thead>

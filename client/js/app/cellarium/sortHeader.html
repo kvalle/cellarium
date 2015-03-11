@@ -1,0 +1,13 @@
+<th class="sort-toggle" ng-click="sortBy(sortField)">
+    
+    <span ng-transclude />
+        
+    <span 
+    	ng-show="beerList.ordering == '-' + sortField" 
+    	class="sorted-marker glyphicon glyphicon-arrow-up" 
+    	aria-hidden="true"></span>
+    <span 
+    	ng-show="beerList.ordering == sortField" 
+    	class="sorted-marker glyphicon glyphicon-arrow-down" 
+    	aria-hidden="true"></span>
+</th>

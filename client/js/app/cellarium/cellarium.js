@@ -42,6 +42,19 @@ angular.module('cellarium', ['api', 'auth', 'flash'])
             });
         }])
 
+    .directive("sortHeader", 
+        function() {
+            return {
+                restrict: "A",
+                scope: true,
+                transclude: true,
+                templateUrl: "js/app/cellarium/sortHeader.html",
+                link: function(scope, element, attributes) {
+                    scope.sortField = attributes["sortHeader"];
+                }
+            };
+        })
+
     .controller('ListCtrl', ['$scope', 'beerApi', 'flash', 'beerDefaults', '$timeout', 
         function($scope, beerApi, flash, beerDefaults, $timeout) {
             $scope.defaults = beerDefaults;
