@@ -31,7 +31,7 @@ if not os.environ.get('CELLARIUM_HOME'):
 if os.environ.get('CELLARIUM_CONFIG'):
     app.config.from_envvar('CELLARIUM_CONFIG')
 else:
-    print " * CELLARIUM_CONFIG is not set, running with default config"
+    app.logger.info(" * CELLARIUM_CONFIG is not set, running with default config")
     app.config.from_pyfile(os.environ.get('CELLARIUM_HOME') + "/cellarium/config.cfg")
 
 api = CellariumApi(app)
